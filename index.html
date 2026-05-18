@@ -444,14 +444,21 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeModal(); });
 </script>
 
 <audio id="bgm" loop>
-    <source src="theme-song.mp3" type="audio/mpeg">
-  </audio>
-  <script>
-    document.addEventListener('click', function startMusic(){
-      document.getElementById('bgm').play();
-      document.removeEventListener('click', startMusic);
-    }, {once:true});
-  </script>
+  <source src="theme-song.mp3" type="audio/mpeg">
+</audio>
+
+<button onclick="playMusic()" style="display:none;"></button>
+
+<script>
+function playMusic() {
+  const music = document.getElementById("bgm");
+  music.play().catch(err => console.log("Autoplay blocked:", err));
+}
+
+document.addEventListener("click", function () {
+  playMusic();
+}, { once: true });
+</script>
 
 </body>
 </html>
