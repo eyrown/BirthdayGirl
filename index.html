@@ -9,10 +9,13 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;background:#f9a8c0}
-#home,#gallery{position:fixed;inset:0;transition:opacity .6s ease}
+#home,#gallery,#wishpage{position:fixed;inset:0;transition:opacity .6s ease}
 #gallery{opacity:0;pointer-events:none}
+#wishpage{opacity:0;pointer-events:none;z-index:6}
 body.show-gallery #home{opacity:0;pointer-events:none}
 body.show-gallery #gallery{opacity:1;pointer-events:all}
+body.show-wish #gallery{opacity:0;pointer-events:none}
+body.show-wish #wishpage{opacity:1;pointer-events:all}
 .page-bg{position:absolute;inset:0;background:linear-gradient(180deg,#f0d4f8 0%,#e8b4f0 35%,#d490e8 70%,#c070d8 100%);z-index:0;overflow:hidden}
 .wave-back,.wave-front{position:absolute;bottom:0;left:0;width:100%;pointer-events:none}
 .wave-back{height:55%;z-index:1}
@@ -27,7 +30,6 @@ body.show-gallery #gallery{opacity:1;pointer-events:all}
 .title-name{font-family:'Fredoka One',cursive;font-size:clamp(38px,6.8vw,85px);line-height:1;background:linear-gradient(90deg,#e0b4ff,#ffd6f0,#b4d4ff,#e0b4ff);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 3s linear infinite;display:block;margin-bottom:18px}
 @keyframes shimmer{0%{background-position:0%}100%{background-position:200%}}
 
-/* TYPEWRITER subtitle */
 .home-sub{font-family:'Nunito',sans-serif;font-size:clamp(11px,1.3vw,15px);color:rgba(60,10,80,.65);line-height:1.7;max-width:320px;margin-bottom:28px;min-height:4.2em}
 .typewriter-cursor{display:inline-block;width:2px;height:1em;background:rgba(60,10,80,.5);margin-left:1px;vertical-align:text-bottom;animation:blink .75s step-end infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
@@ -35,7 +37,6 @@ body.show-gallery #gallery{opacity:1;pointer-events:all}
 #next-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 36px;border-radius:50px;border:1.5px solid rgba(255,255,255,.55);background:rgba(255,255,255,.22);backdrop-filter:blur(12px);color:#5a1a80;font-size:13px;font-family:'Nunito',sans-serif;font-weight:700;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 6px 24px rgba(140,60,200,.22)}
 #next-btn:hover{transform:scale(1.06) translateY(-2px);box-shadow:0 14px 36px rgba(140,60,200,.35)}
 
-/* CAKE CANVAS CONTAINERS */
 #cake-side{flex:0 0 auto;display:flex;align-items:center;justify-content:center;height:100%;position:relative;z-index:10}
 #home-canvas-wrap{width:clamp(280px,38vw,520px);height:clamp(320px,70vh,620px);position:relative}
 #home-canvas-wrap canvas{width:100%!important;height:100%!important;display:block}
@@ -51,14 +52,12 @@ body.show-gallery #gallery{opacity:1;pointer-events:all}
 .photo-card .photo-inner{background:#fff;border-radius:6px;padding:9px 9px 30px;width:110px;position:relative}
 .photo-card .photo-inner img{width:100%;height:100px;object-fit:cover;border-radius:3px;display:block;pointer-events:none}
 .photo-card .photo-inner .cap{font-size:8px;text-align:center;color:#8b6080;font-family:'Nunito',sans-serif;margin-top:6px;line-height:1.3}
-/* Image fallback placeholder */
 .photo-card .photo-inner .img-placeholder{width:100%;height:100px;border-radius:3px;display:none;align-items:center;justify-content:center;background:linear-gradient(135deg,#c060f0,#9030c8);flex-direction:column;gap:4px}
 .photo-card .photo-inner .img-placeholder span{font-size:7px;color:rgba(255,255,255,.85);font-family:'Nunito',sans-serif;text-align:center;padding:0 4px;line-height:1.3}
 .photo-card .photo-inner .img-placeholder .ph-heart{font-size:18px;color:rgba(255,255,255,.9)}
 
 #hint{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:rgba(80,20,100,.7);z-index:30;font-family:'Nunito',sans-serif;pointer-events:none;background:rgba(255,255,255,.25);backdrop-filter:blur(8px);padding:7px 20px;border-radius:30px;border:1px solid rgba(255,255,255,.4);transition:opacity 1s ease}
 
-/* PULSE ARROW */
 #scroll-arrow{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);z-index:30;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:4px;opacity:0;transition:opacity .8s ease}
 #scroll-arrow .arrow-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(80,20,100,.7);font-family:'Nunito',sans-serif}
 #scroll-arrow .arrow-chevrons{display:flex;flex-direction:column;align-items:center;gap:2px}
@@ -66,6 +65,12 @@ body.show-gallery #gallery{opacity:1;pointer-events:all}
 #scroll-arrow .chev:nth-child(2){animation-delay:.2s;opacity:.7}
 #scroll-arrow .chev:nth-child(3){animation-delay:.4s;opacity:.4}
 @keyframes chevPulse{0%,100%{opacity:.3;transform:rotate(45deg) translateY(-3px)}50%{opacity:1;transform:rotate(45deg) translateY(3px)}}
+
+/* GALLERY WISH BUTTON */
+#wish-btn{position:absolute;bottom:22px;right:22px;z-index:40;display:none;align-items:center;gap:7px;padding:11px 28px;border-radius:50px;border:1.5px solid rgba(255,255,255,.6);background:rgba(255,255,255,.28);backdrop-filter:blur(14px);color:#5a1a80;font-size:12px;font-family:'Nunito',sans-serif;font-weight:700;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:transform .2s,box-shadow .2s,opacity .6s ease;box-shadow:0 6px 24px rgba(140,60,200,.25);opacity:0;animation:wishPulse 2.2s ease-in-out infinite}
+#wish-btn:hover{transform:scale(1.07) translateY(-2px);box-shadow:0 14px 36px rgba(140,60,200,.4)}
+@keyframes wishPulse{0%,100%{box-shadow:0 6px 24px rgba(140,60,200,.25),0 0 0 0 rgba(180,80,255,0)}50%{box-shadow:0 6px 24px rgba(140,60,200,.25),0 0 0 8px rgba(180,80,255,0)}}
+body.show-gallery #wish-btn{display:flex}
 
 /* HAPPY BIRTHDAY RIBBON */
 #bday-ribbon{position:absolute;top:0;left:0;width:100%;z-index:25;pointer-events:none;overflow:hidden;height:36px;opacity:0;transition:opacity .8s ease}
@@ -77,12 +82,11 @@ body.show-gallery #gallery{opacity:1;pointer-events:all}
 #bday-ribbon::before{left:0;background:linear-gradient(90deg,rgba(200,100,230,.4),transparent)}
 #bday-ribbon::after{right:0;background:linear-gradient(-90deg,rgba(200,100,230,.4),transparent)}
 
-/* BACK TO HOME BUTTON */
 #back-btn{position:absolute;top:46px;left:20px;z-index:30;display:none;align-items:center;gap:6px;padding:8px 18px;border-radius:50px;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.2);backdrop-filter:blur(10px);color:#5a1a80;font-size:11px;font-family:'Nunito',sans-serif;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 16px rgba(140,60,200,.18)}
 #back-btn:hover{transform:scale(1.05) translateY(-1px);box-shadow:0 8px 24px rgba(140,60,200,.3)}
 body.show-gallery #back-btn{display:flex}
+body.show-wish #back-btn{display:none!important}
 
-/* MUSIC BUTTON */
 #music-btn{position:absolute;top:46px;right:20px;z-index:30;width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.22);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 16px rgba(140,60,200,.18)}
 #music-btn:hover{transform:scale(1.1);box-shadow:0 8px 24px rgba(140,60,200,.3)}
 #music-btn svg{width:18px;height:18px;fill:none;stroke:#5a1a80;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:opacity .2s}
@@ -90,7 +94,6 @@ body.show-gallery #back-btn{display:flex}
 #music-btn.muted svg.icon-off{display:block}
 #music-btn svg.icon-off{display:none}
 
-/* COUNTDOWN */
 #countdown{position:absolute;bottom:20px;right:20px;z-index:30;pointer-events:none;background:rgba(255,255,255,.2);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.35);border-radius:14px;padding:10px 16px;text-align:center;opacity:0;transition:opacity .8s ease}
 #countdown .cd-label{font-family:'Nunito',sans-serif;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(80,20,100,.65);margin-bottom:5px}
 #countdown .cd-numbers{display:flex;gap:8px;align-items:center}
@@ -114,8 +117,6 @@ body.show-gallery #back-btn{display:flex}
 #modal-text h2{font-size:clamp(20px,3.5vw,26px);color:#3a1060;margin-bottom:16px;line-height:1.2;font-family:'Fredoka One',cursive}
 #modal-text p{font-size:14.5px;line-height:2;color:#5a3070;font-style:italic;font-family:'Nunito',sans-serif}
 #modal-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:22px;color:#9060a0;cursor:pointer;z-index:10;line-height:1;padding:4px}
-
-/* MODAL NAV ARROWS */
 #modal-prev,#modal-next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.6);backdrop-filter:blur(6px);border:1.5px solid rgba(200,150,255,.5);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;transition:background .2s,transform .2s;color:#5a1a80;font-size:16px;line-height:1}
 #modal-prev{left:10px}
 #modal-next{right:10px}
@@ -126,12 +127,66 @@ body.show-gallery #back-btn{display:flex}
 .float-heart{position:absolute;bottom:-40px;pointer-events:none;animation:floatHeart linear infinite;opacity:0}
 @keyframes floatHeart{0%{transform:translateY(0) rotate(0deg) scale(1);opacity:0}10%{opacity:.9}80%{opacity:.6}100%{transform:translateY(-110vh) rotate(360deg) scale(0.3);opacity:0}}
 
-/* CONFETTI */
 #confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:50;opacity:0}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
 .particle{position:fixed;border-radius:50%;pointer-events:none;animation:floatP ease-in-out infinite alternate;z-index:1}
 @keyframes floatP{0%{transform:translateY(0)}100%{transform:translateY(-20px)}}
+
+/* ═══════════════════════════════════════
+   WISH PAGE
+═══════════════════════════════════════ */
+#wishpage{z-index:6}
+#wish-bg{position:absolute;inset:0;background:linear-gradient(180deg,#f0d4f8 0%,#e8b4f0 35%,#d490e8 70%,#c070d8 100%);z-index:0;overflow:hidden}
+
+/* scattered photo cards layer */
+#scatter-layer{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+.scatter-card{position:absolute;background:#fff;border-radius:6px;padding:6px 6px 20px;pointer-events:none;will-change:transform;transition:transform 1.4s cubic-bezier(.22,1,.36,1),opacity 1.2s ease}
+.scatter-card img{width:70px;height:60px;object-fit:cover;border-radius:3px;display:block}
+.scatter-card .sc-ph{width:70px;height:60px;border-radius:3px;background:linear-gradient(135deg,#c060f0,#9030c8);display:flex;align-items:center;justify-content:center;font-size:16px;color:rgba(255,255,255,.8)}
+
+/* wish cake canvas */
+#wish-cake-wrap{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:10;pointer-events:none;opacity:0;transition:opacity .5s ease}
+#wish-cake-wrap canvas{display:block}
+
+/* wish text */
+#wish-text{position:absolute;left:50%;top:18%;transform:translateX(-50%);z-index:15;text-align:center;pointer-events:none;opacity:0;transition:opacity 1s ease}
+#wish-text .wt-label{font-family:'Nunito',sans-serif;font-size:clamp(9px,1.1vw,12px);letter-spacing:.35em;color:rgba(80,20,100,.6);text-transform:uppercase;margin-bottom:10px}
+#wish-text .wt-main{font-family:'Fredoka One',cursive;font-size:clamp(22px,4.5vw,52px);line-height:1.15;background:linear-gradient(90deg,#e0b4ff,#ffd6f0,#b4d4ff,#e0b4ff);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 3s linear infinite;display:block}
+#wish-text .wt-sub{font-family:'Nunito',sans-serif;font-size:clamp(11px,1.2vw,14px);color:rgba(80,20,100,.65);margin-top:8px;letter-spacing:.06em}
+
+/* mic / tap button */
+#blow-hint{position:absolute;bottom:18%;left:50%;transform:translateX(-50%);z-index:20;text-align:center;opacity:0;transition:opacity .8s ease;pointer-events:none}
+#blow-hint .bh-mic{font-family:'Nunito',sans-serif;font-size:clamp(10px,1.2vw,13px);color:rgba(80,20,100,.65);letter-spacing:.12em;display:flex;align-items:center;justify-content:center;gap:7px}
+#blow-hint .bh-mic .mic-anim{width:24px;height:24px;border-radius:50%;background:rgba(180,80,255,.2);display:flex;align-items:center;justify-content:center;animation:micPulse 1.6s ease-in-out infinite}
+@keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(180,80,255,.4)}50%{box-shadow:0 0 0 10px rgba(180,80,255,0)}}
+
+#tap-blow-btn{position:absolute;bottom:17%;left:50%;transform:translateX(-50%);z-index:20;display:none;align-items:center;gap:8px;padding:14px 40px;border-radius:50px;border:2px solid rgba(255,255,255,.6);background:linear-gradient(135deg,rgba(180,80,255,.35),rgba(255,120,200,.25));backdrop-filter:blur(14px);color:#4a0a70;font-size:14px;font-family:'Nunito',sans-serif;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 32px rgba(140,60,200,.3);animation:tapPulse 2s ease-in-out infinite}
+#tap-blow-btn:active{transform:translateX(-50%) scale(.95)}
+@keyframes tapPulse{0%,100%{box-shadow:0 8px 32px rgba(140,60,200,.3),0 0 0 0 rgba(180,80,255,.3)}50%{box-shadow:0 8px 32px rgba(140,60,200,.3),0 0 0 12px rgba(180,80,255,0)}}
+
+/* blown state — smoke */
+#smoke-container{position:absolute;inset:0;z-index:12;pointer-events:none;overflow:hidden}
+.smoke-puff{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(220,200,240,.9) 0%,rgba(200,180,230,.5) 40%,rgba(180,160,220,0) 100%);pointer-events:none;animation:smokePuff ease-out forwards}
+@keyframes smokePuff{0%{transform:translate(-50%,-50%) scale(.2);opacity:.9}100%{transform:translate(-50%,-200%) scale(2.5);opacity:0}}
+
+/* wish countdown — appears after blow */
+#wish-countdown{position:absolute;bottom:8%;left:50%;transform:translateX(-50%);z-index:20;text-align:center;opacity:0;transition:opacity 1.2s ease;pointer-events:none;background:rgba(255,255,255,.22);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.4);border-radius:18px;padding:16px 32px}
+#wish-countdown .wcd-label{font-family:'Nunito',sans-serif;font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(80,20,100,.65);margin-bottom:8px}
+#wish-countdown .wcd-row{display:flex;gap:10px;align-items:center;justify-content:center}
+.wcd-unit{text-align:center}
+.wcd-num{font-family:'Fredoka One',cursive;font-size:clamp(26px,4vw,38px);color:#5a1a80;line-height:1}
+.wcd-sub{font-family:'Nunito',sans-serif;font-size:7px;color:rgba(80,20,100,.6);letter-spacing:.1em;text-transform:uppercase}
+.wcd-sep{font-family:'Fredoka One',cursive;font-size:24px;color:rgba(140,60,200,.5);margin-bottom:12px}
+
+/* blown message */
+#wish-message{position:absolute;top:12%;left:50%;transform:translateX(-50%);z-index:25;text-align:center;opacity:0;transition:opacity 1s ease;pointer-events:none;width:90%;max-width:480px}
+#wish-message .wm-title{font-family:'Fredoka One',cursive;font-size:clamp(28px,5vw,60px);background:linear-gradient(90deg,#ffccff,#fff0ff,#ccddff,#ffccff);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 3s linear infinite;line-height:1.1;margin-bottom:10px}
+#wish-message .wm-sub{font-family:'Nunito',sans-serif;font-size:clamp(12px,1.4vw,16px);color:rgba(255,255,255,.9);line-height:1.7;text-shadow:0 2px 12px rgba(100,20,160,.4)}
+
+/* wave overlays on wish page */
+#wish-bg .wave-back{height:55%;z-index:1}
+#wish-bg .wave-front{height:42%;z-index:2}
 
 @media(max-width:680px){
   #home-layout{flex-direction:column;justify-content:flex-end;padding-bottom:70px;gap:0}
@@ -145,24 +200,21 @@ body.show-gallery #back-btn{display:flex}
   #modal-prev{left:6px}
   #modal-next{right:6px}
   #countdown{bottom:60px;right:10px}
+  #wish-btn{bottom:70px;right:12px;font-size:10px;padding:9px 18px}
+  #wish-text .wt-main{font-size:clamp(20px,7vw,38px)}
 }
 </style>
 </head>
 <body>
 
-<!-- FLOATING HEARTS CONTAINER (shared both pages) -->
 <div id="hearts-container"></div>
-
-<!-- CONFETTI CANVAS -->
 <canvas id="confetti-canvas"></canvas>
 
-<!-- MUSIC BUTTON (shared, always visible) -->
 <button id="music-btn" title="Toggle music" onclick="toggleMusic()">
   <svg class="icon-on" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
   <svg class="icon-off" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
 </button>
 
-<!-- BACK TO HOME BUTTON -->
 <button id="back-btn" onclick="goBackHome()">← Back</button>
 
 <!-- HOME -->
@@ -192,7 +244,6 @@ body.show-gallery #back-btn{display:flex}
     <svg class="wave-back" viewBox="0 0 1440 420" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,180 C200,80 400,280 600,160 C800,40 1000,220 1200,140 C1350,80 1420,160 1440,140 L1440,420 L0,420 Z" fill="rgba(160,80,220,0.45)"/></svg>
     <svg class="wave-front" viewBox="0 0 1440 320" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,160 C180,60 360,240 560,130 C760,20 960,200 1160,110 C1320,40 1410,120 1440,100 L1440,320 L0,320 Z" fill="rgba(140,60,200,0.6)"/></svg>
   </div>
-  <!-- HAPPY BIRTHDAY RIBBON -->
   <div id="bday-ribbon">
     <div class="ribbon-track" id="ribbon-track"></div>
   </div>
@@ -203,13 +254,10 @@ body.show-gallery #back-btn{display:flex}
     <div id="scroll-arrow">
       <div class="arrow-label">Scroll or swipe</div>
       <div class="arrow-chevrons">
-        <div class="chev"></div>
-        <div class="chev"></div>
-        <div class="chev"></div>
+        <div class="chev"></div><div class="chev"></div><div class="chev"></div>
       </div>
     </div>
   </div>
-  <!-- COUNTDOWN -->
   <div id="countdown">
     <div class="cd-label">Next birthday in</div>
     <div class="cd-numbers">
@@ -220,6 +268,55 @@ body.show-gallery #back-btn{display:flex}
       <div class="cd-unit"><div class="cd-num" id="cd-m">--</div><div class="cd-sub">min</div></div>
       <div class="cd-sep">:</div>
       <div class="cd-unit"><div class="cd-num" id="cd-s">--</div><div class="cd-sub">sec</div></div>
+    </div>
+  </div>
+  <!-- WISH PAGE BUTTON -->
+  <button id="wish-btn" onclick="goToWishPage()">🎂 Make a Wish</button>
+</div>
+
+<!-- WISH PAGE -->
+<div id="wishpage">
+  <div id="wish-bg">
+    <svg class="wave-back" viewBox="0 0 1440 420" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,180 C200,80 400,280 600,160 C800,40 1000,220 1200,140 C1350,80 1420,160 1440,140 L1440,420 L0,420 Z" fill="rgba(160,80,220,0.45)"/></svg>
+    <svg class="wave-front" viewBox="0 0 1440 320" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,160 C180,60 360,240 560,130 C760,20 960,200 1160,110 C1320,40 1410,120 1440,100 L1440,320 L0,320 Z" fill="rgba(140,60,200,0.6)"/></svg>
+  </div>
+  <!-- Scattered cards layer (populated by JS) -->
+  <div id="scatter-layer"></div>
+  <!-- Smoke container -->
+  <div id="smoke-container"></div>
+  <!-- Cake canvas -->
+  <div id="wish-cake-wrap"></div>
+  <!-- "Make a wish" text -->
+  <div id="wish-text">
+    <div class="wt-label">Close your eyes</div>
+    <span class="wt-main">Make a wish and<br>blow your candle,<br>Mahal 💜</span>
+    <div class="wt-sub">— take a deep breath and blow —</div>
+  </div>
+  <!-- Mic listening hint -->
+  <div id="blow-hint">
+    <div class="bh-mic">
+      <div class="mic-anim">🎤</div>
+      <span>Listening for your blow…</span>
+    </div>
+  </div>
+  <!-- Tap fallback (shown only if mic denied) -->
+  <button id="tap-blow-btn" onclick="triggerBlow()">💨 Tap to Blow</button>
+  <!-- Post-blow message -->
+  <div id="wish-message">
+    <div class="wm-title">Your wish is sent! 🌠</div>
+    <div class="wm-sub">May every dream you hold close come true, Eley.<br>Happy Birthday, Mahal. I love you so much. 💜</div>
+  </div>
+  <!-- Wish countdown -->
+  <div id="wish-countdown">
+    <div class="wcd-label">Next birthday in</div>
+    <div class="wcd-row">
+      <div class="wcd-unit"><div class="wcd-num" id="wcd-d">--</div><div class="wcd-sub">days</div></div>
+      <div class="wcd-sep">:</div>
+      <div class="wcd-unit"><div class="wcd-num" id="wcd-h">--</div><div class="wcd-sub">hrs</div></div>
+      <div class="wcd-sep">:</div>
+      <div class="wcd-unit"><div class="wcd-num" id="wcd-m">--</div><div class="wcd-sub">min</div></div>
+      <div class="wcd-sep">:</div>
+      <div class="wcd-unit"><div class="wcd-num" id="wcd-s">--</div><div class="wcd-sub">sec</div></div>
     </div>
   </div>
 </div>
@@ -270,32 +367,20 @@ const memories = [
 // TYPEWRITER
 // ══════════════════════════════════════════════════════════
 const subtitleText = "I wish you all the best, my loving, caring, gorgeous Eley. From the very first day, my heart already knew your name. 💕";
-let twIndex = 0;
-let twStarted = false;
-
-function startTypewriter() {
-  if (twStarted) return;
-  twStarted = true;
-  const el = document.getElementById('typewriter-text');
-  function type() {
-    if (twIndex <= subtitleText.length) {
-      el.textContent = subtitleText.slice(0, twIndex);
-      twIndex++;
-      setTimeout(type, twIndex < 5 ? 80 : 38);
-    } else {
-      document.getElementById('tw-cursor').style.animationPlayState = 'paused';
-      document.getElementById('tw-cursor').style.opacity = '0';
-    }
-  }
-  setTimeout(type, 900);
+let twIndex = 0, twStarted = false;
+function startTypewriter(){
+  if(twStarted) return; twStarted=true;
+  const el=document.getElementById('typewriter-text');
+  function type(){ if(twIndex<=subtitleText.length){ el.textContent=subtitleText.slice(0,twIndex); twIndex++; setTimeout(type,twIndex<5?80:38); }else{ document.getElementById('tw-cursor').style.animationPlayState='paused'; document.getElementById('tw-cursor').style.opacity='0'; } }
+  setTimeout(type,900);
 }
 startTypewriter();
 
 // ══════════════════════════════════════════════════════════
-// PARTICLES (generic)
+// PARTICLES
 // ══════════════════════════════════════════════════════════
 for(let i=0;i<18;i++){
-  const p=document.createElement('div');p.className='particle';
+  const p=document.createElement('div'); p.className='particle';
   p.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${3+Math.random()*6}px;height:${3+Math.random()*6}px;background:rgba(200,150,255,${.15+Math.random()*.4});animation-duration:${4+Math.random()*6}s;animation-delay:${Math.random()*4}s`;
   document.body.appendChild(p);
 }
@@ -303,171 +388,151 @@ for(let i=0;i<18;i++){
 // ══════════════════════════════════════════════════════════
 // FLOATING HEARTS
 // ══════════════════════════════════════════════════════════
-const heartSymbols = ['♡','♥','❤','💕','💖','💗'];
-function spawnHeart() {
-  const h = document.createElement('div');
-  h.className = 'float-heart';
-  const size = 10 + Math.random() * 18;
-  const left = Math.random() * 100;
-  const dur = 7 + Math.random() * 8;
-  const delay = Math.random() * 3;
-  const symbol = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
-  h.textContent = symbol;
-  h.style.cssText = `left:${left}%;font-size:${size}px;color:rgba(${200+Math.random()*55},${80+Math.random()*60},${200+Math.random()*55},${0.5+Math.random()*0.4});animation-duration:${dur}s;animation-delay:${delay}s`;
+const heartSymbols=['♡','♥','❤','💕','💖','💗'];
+function spawnHeart(){
+  const h=document.createElement('div'); h.className='float-heart';
+  const size=10+Math.random()*18, left=Math.random()*100, dur=7+Math.random()*8, delay=Math.random()*3;
+  h.textContent=heartSymbols[Math.floor(Math.random()*heartSymbols.length)];
+  h.style.cssText=`left:${left}%;font-size:${size}px;color:rgba(${200+Math.random()*55},${80+Math.random()*60},${200+Math.random()*55},${0.5+Math.random()*0.4});animation-duration:${dur}s;animation-delay:${delay}s`;
   document.getElementById('hearts-container').appendChild(h);
-  setTimeout(() => h.remove(), (dur + delay) * 1000 + 500);
+  setTimeout(()=>h.remove(),(dur+delay)*1000+500);
 }
-function startHearts() {
-  for(let i=0;i<6;i++) setTimeout(spawnHeart, i * 600);
-  setInterval(spawnHeart, 1200);
-}
+function startHearts(){ for(let i=0;i<6;i++) setTimeout(spawnHeart,i*600); setInterval(spawnHeart,1200); }
 startHearts();
 
 // ══════════════════════════════════════════════════════════
 // CONFETTI
 // ══════════════════════════════════════════════════════════
-function fireConfetti() {
-  const canvas = document.getElementById('confetti-canvas');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  canvas.style.opacity = '1';
-  const ctx = canvas.getContext('2d');
-  const colors = ['#e0b4ff','#ffd6f0','#c060f0','#ff88cc','#b4d4ff','#ffffff','#ffaaee'];
-  const pieces = [];
-  for(let i = 0; i < 140; i++) {
+function fireConfetti(x, y, spread){
+  const canvas=document.getElementById('confetti-canvas');
+  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  canvas.style.opacity='1';
+  const ctx=canvas.getContext('2d');
+  const colors=['#e0b4ff','#ffd6f0','#c060f0','#ff88cc','#b4d4ff','#ffffff','#ffaaee'];
+  const pieces=[];
+  const cx = x != null ? x : canvas.width/2;
+  const cy = y != null ? y : -10;
+  const sp = spread != null ? spread : canvas.width;
+  for(let i=0;i<160;i++){
     pieces.push({
-      x: Math.random() * canvas.width,
-      y: -10 - Math.random() * 200,
-      w: 5 + Math.random() * 9,
-      h: 3 + Math.random() * 5,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      rot: Math.random() * Math.PI * 2,
-      rotSpeed: (Math.random() - 0.5) * 0.15,
-      vx: (Math.random() - 0.5) * 3,
-      vy: 2 + Math.random() * 4,
-      alpha: 1
+      x: cx + (Math.random()-0.5)*sp,
+      y: cy - Math.random()*200,
+      w:5+Math.random()*9, h:3+Math.random()*5,
+      color:colors[Math.floor(Math.random()*colors.length)],
+      rot:Math.random()*Math.PI*2, rotSpeed:(Math.random()-.5)*.15,
+      vx:(Math.random()-.5)*4, vy:1.5+Math.random()*4, alpha:1
     });
   }
-  let frame = 0;
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    let alive = false;
-    pieces.forEach(p => {
-      p.x += p.vx; p.y += p.vy; p.rot += p.rotSpeed;
-      if(frame > 90) p.alpha -= 0.012;
-      if(p.alpha <= 0) return;
-      alive = true;
-      ctx.save();
-      ctx.globalAlpha = Math.max(0, p.alpha);
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rot);
-      ctx.fillStyle = p.color;
-      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+  let frame=0;
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    let alive=false;
+    pieces.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.rot+=p.rotSpeed;
+      if(frame>80) p.alpha-=0.012;
+      if(p.alpha<=0) return;
+      alive=true;
+      ctx.save(); ctx.globalAlpha=Math.max(0,p.alpha);
+      ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+      ctx.fillStyle=p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
       ctx.restore();
     });
     frame++;
     if(alive) requestAnimationFrame(draw);
-    else { canvas.style.opacity = '0'; ctx.clearRect(0,0,canvas.width,canvas.height); }
+    else{ canvas.style.opacity='0'; ctx.clearRect(0,0,canvas.width,canvas.height); }
   }
   draw();
 }
 
 // ══════════════════════════════════════════════════════════
-// HAPPY BIRTHDAY RIBBON
+// RIBBON
 // ══════════════════════════════════════════════════════════
-function buildRibbon() {
-  const track = document.getElementById('ribbon-track');
-  const text = '🎂 HAPPY BIRTHDAY ELEY ♡ &nbsp; ✨ MAHAL KITA ✨ &nbsp; 🎉 29 & GLOWING 🎉 &nbsp; 💜 FROM ERON WITH LOVE 💜 &nbsp; ';
-  let html = '';
-  for(let i = 0; i < 6; i++) html += `<span>${text}</span>`;
-  track.innerHTML = html;
+function buildRibbon(){
+  const track=document.getElementById('ribbon-track');
+  const text='🎂 HAPPY BIRTHDAY ELEY ♡ &nbsp; ✨ MAHAL KITA ✨ &nbsp; 🎉 29 & GLOWING 🎉 &nbsp; 💜 FROM ERON WITH LOVE 💜 &nbsp; ';
+  let html=''; for(let i=0;i<6;i++) html+=`<span>${text}</span>`;
+  track.innerHTML=html;
 }
 buildRibbon();
 
 // ══════════════════════════════════════════════════════════
-// COUNTDOWN TO NEXT BIRTHDAY (May 21, 2027)
+// COUNTDOWN (gallery)
 // ══════════════════════════════════════════════════════════
-function updateCountdown() {
-  const now = new Date();
-  let next = new Date(now.getFullYear(), 4, 21, 0, 0, 0); // May = month 4
-  if(now >= next) next = new Date(now.getFullYear() + 1, 4, 21, 0, 0, 0);
-  const diff = next - now;
-  const days = Math.floor(diff / 86400000);
-  const hrs  = Math.floor((diff % 86400000) / 3600000);
-  const mins = Math.floor((diff % 3600000) / 60000);
-  const secs = Math.floor((diff % 60000) / 1000);
-  document.getElementById('cd-d').textContent = String(days).padStart(2,'0');
-  document.getElementById('cd-h').textContent = String(hrs).padStart(2,'0');
-  document.getElementById('cd-m').textContent = String(mins).padStart(2,'0');
-  document.getElementById('cd-s').textContent = String(secs).padStart(2,'0');
+function calcCountdown(){
+  const now=new Date();
+  let next=new Date(now.getFullYear(),4,21,0,0,0);
+  if(now>=next) next=new Date(now.getFullYear()+1,4,21,0,0,0);
+  const diff=next-now;
+  return {
+    d:Math.floor(diff/86400000),
+    h:Math.floor((diff%86400000)/3600000),
+    m:Math.floor((diff%3600000)/60000),
+    s:Math.floor((diff%60000)/1000)
+  };
 }
-updateCountdown();
-setInterval(updateCountdown, 1000);
+function updateCountdown(){
+  const c=calcCountdown();
+  document.getElementById('cd-d').textContent=String(c.d).padStart(2,'0');
+  document.getElementById('cd-h').textContent=String(c.h).padStart(2,'0');
+  document.getElementById('cd-m').textContent=String(c.m).padStart(2,'0');
+  document.getElementById('cd-s').textContent=String(c.s).padStart(2,'0');
+}
+function updateWishCountdown(){
+  const c=calcCountdown();
+  const wd=document.getElementById('wcd-d'); if(wd) wd.textContent=String(c.d).padStart(2,'0');
+  const wh=document.getElementById('wcd-h'); if(wh) wh.textContent=String(c.h).padStart(2,'0');
+  const wm=document.getElementById('wcd-m'); if(wm) wm.textContent=String(c.m).padStart(2,'0');
+  const ws=document.getElementById('wcd-s'); if(ws) ws.textContent=String(c.s).padStart(2,'0');
+}
+updateCountdown(); updateWishCountdown();
+setInterval(()=>{ updateCountdown(); updateWishCountdown(); }, 1000);
 
 // ══════════════════════════════════════════════════════════
 // MUSIC
 // ══════════════════════════════════════════════════════════
-let musicPlaying = false;
-const bgm = document.getElementById('bgm');
-
-function toggleMusic() {
-  const btn = document.getElementById('music-btn');
-  if (musicPlaying) {
-    bgm.pause();
-    musicPlaying = false;
-    btn.classList.add('muted');
-  } else {
-    bgm.play().catch(()=>{});
-    musicPlaying = true;
-    btn.classList.remove('muted');
-  }
+let musicPlaying=false;
+const bgm=document.getElementById('bgm');
+function toggleMusic(){
+  const btn=document.getElementById('music-btn');
+  if(musicPlaying){ bgm.pause(); musicPlaying=false; btn.classList.add('muted'); }
+  else{ bgm.play().catch(()=>{}); musicPlaying=true; btn.classList.remove('muted'); }
 }
-
-// Auto-start on first interaction
-document.addEventListener('click', function startM(e) {
-  if(e.target.id === 'music-btn') return;
-  bgm.play().then(() => {
-    musicPlaying = true;
-    document.getElementById('music-btn').classList.remove('muted');
-  }).catch(()=>{});
-  document.removeEventListener('click', startM);
-}, {once: true});
+document.addEventListener('click',function startM(e){
+  if(e.target.id==='music-btn') return;
+  bgm.play().then(()=>{ musicPlaying=true; document.getElementById('music-btn').classList.remove('muted'); }).catch(()=>{});
+  document.removeEventListener('click',startM);
+},{once:true});
 
 // ══════════════════════════════════════════════════════════
 // THREE.JS CAKE BUILDER
 // ══════════════════════════════════════════════════════════
 function buildCakeScene(container, width, height, autoRotate){
-  const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
-  renderer.setSize(width, height);
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  renderer.outputEncoding = THREE.sRGBEncoding;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.25;
+  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+  renderer.setSize(width,height);
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.shadowMap.enabled=true;
+  renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+  renderer.outputEncoding=THREE.sRGBEncoding;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.25;
   container.appendChild(renderer.domElement);
 
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(42, width/height, 0.1, 100);
-  camera.position.set(0, 3.2, 8.5);
-  camera.lookAt(0, 2.2, 0);
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(42,width/height,0.1,100);
+  camera.position.set(0,3.2,8.5);
+  camera.lookAt(0,2.2,0);
 
-  scene.add(new THREE.AmbientLight(0xf0e0ff, 0.75));
-  const key = new THREE.DirectionalLight(0xfff0ff, 2.4);
-  key.position.set(-4, 9, 5); key.castShadow=true;
+  scene.add(new THREE.AmbientLight(0xf0e0ff,0.75));
+  const key=new THREE.DirectionalLight(0xfff0ff,2.4);
+  key.position.set(-4,9,5); key.castShadow=true;
   key.shadow.mapSize.set(2048,2048);
   key.shadow.camera.left=-5; key.shadow.camera.right=5;
   key.shadow.camera.top=6; key.shadow.camera.bottom=-4;
-  key.shadow.bias=-0.001;
-  scene.add(key);
-  const fill = new THREE.DirectionalLight(0xd0c0ff, 1.0);
-  fill.position.set(5,4,-3); scene.add(fill);
-  const rim = new THREE.DirectionalLight(0xc080ff, 0.7);
-  rim.position.set(0,2,-6); scene.add(rim);
-  const candlePt = new THREE.PointLight(0xff9933, 2.2, 5);
-  candlePt.position.set(0.08, 5.6, 0); scene.add(candlePt);
-  const underGlow = new THREE.PointLight(0xaa44ff, 0.8, 4);
-  underGlow.position.set(0, 0.5, 0); scene.add(underGlow);
+  key.shadow.bias=-0.001; scene.add(key);
+  const fill=new THREE.DirectionalLight(0xd0c0ff,1.0); fill.position.set(5,4,-3); scene.add(fill);
+  const rim=new THREE.DirectionalLight(0xc080ff,0.7); rim.position.set(0,2,-6); scene.add(rim);
+  const candlePt=new THREE.PointLight(0xff9933,2.2,5); candlePt.position.set(0.08,5.6,0); scene.add(candlePt);
+  const underGlow=new THREE.PointLight(0xaa44ff,0.8,4); underGlow.position.set(0,0.5,0); scene.add(underGlow);
 
   function frostTex(c1,c2,highlight=true){
     const cv=document.createElement('canvas'); cv.width=512; cv.height=256;
@@ -475,42 +540,28 @@ function buildCakeScene(container, width, height, autoRotate){
     const g=ctx.createLinearGradient(0,0,512,256);
     g.addColorStop(0,c1); g.addColorStop(0.5,c2); g.addColorStop(1,c1);
     ctx.fillStyle=g; ctx.fillRect(0,0,512,256);
-    for(let i=0;i<4000;i++){
-      ctx.fillStyle=`rgba(255,255,255,${Math.random()*.05})`;
-      ctx.fillRect(Math.random()*512,Math.random()*256,2,2);
-    }
-    if(highlight){
-      for(let x=0;x<512;x+=52){
-        const hg=ctx.createLinearGradient(x,0,x+28,0);
-        hg.addColorStop(0,'rgba(255,255,255,0)');
-        hg.addColorStop(0.5,'rgba(255,255,255,0.18)');
-        hg.addColorStop(1,'rgba(255,255,255,0)');
-        ctx.fillStyle=hg; ctx.fillRect(x,0,28,256);
-      }
-    }
+    for(let i=0;i<4000;i++){ ctx.fillStyle=`rgba(255,255,255,${Math.random()*.05})`; ctx.fillRect(Math.random()*512,Math.random()*256,2,2); }
+    if(highlight){ for(let x=0;x<512;x+=52){ const hg=ctx.createLinearGradient(x,0,x+28,0); hg.addColorStop(0,'rgba(255,255,255,0)'); hg.addColorStop(0.5,'rgba(255,255,255,0.18)'); hg.addColorStop(1,'rgba(255,255,255,0)'); ctx.fillStyle=hg; ctx.fillRect(x,0,28,256); } }
     return new THREE.CanvasTexture(cv);
   }
-  function mat(color,rough=0.32,metal=0.0){
-    return new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal});
-  }
+  function mat(color,rough=0.32,metal=0.0){ return new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal}); }
 
-  const m1s = new THREE.MeshStandardMaterial({map:frostTex('#9b30d0','#7a18b0'),roughness:0.3,metalness:0.0});
-  const m1t = new THREE.MeshStandardMaterial({map:frostTex('#c060f0','#a040d8'),roughness:0.2,metalness:0.05});
-  const m2s = new THREE.MeshStandardMaterial({map:frostTex('#b050e0','#9030c8'),roughness:0.28,metalness:0.0});
-  const m2t = new THREE.MeshStandardMaterial({map:frostTex('#d080ff','#b860e8'),roughness:0.18,metalness:0.05});
-  const m3s = new THREE.MeshStandardMaterial({map:frostTex('#c878f0','#aa50e0'),roughness:0.25,metalness:0.0});
-  const m3t = new THREE.MeshStandardMaterial({map:frostTex('#e8b0ff','#d090f8'),roughness:0.15,metalness:0.06});
-  const glazeMat = mat(0xcc44ff, 0.06, 0.15);
-  const creamMat = mat(0xf8f0ff, 0.45);
-  const berryMat = mat(0xdd1155, 0.4);
-  const leafMat  = mat(0x2e7d32, 0.6);
-  const plateMat = new THREE.MeshStandardMaterial({color:0xc8a0e8,roughness:0.12,metalness:0.35});
-  const colMat   = new THREE.MeshStandardMaterial({color:0xaa80d0,roughness:0.18,metalness:0.28});
-  const candleMat= mat(0xeeccff,0.4);
-  const wickMat  = mat(0x2a1000,0.9);
+  const m1s=new THREE.MeshStandardMaterial({map:frostTex('#9b30d0','#7a18b0'),roughness:0.3,metalness:0.0});
+  const m1t=new THREE.MeshStandardMaterial({map:frostTex('#c060f0','#a040d8'),roughness:0.2,metalness:0.05});
+  const m2s=new THREE.MeshStandardMaterial({map:frostTex('#b050e0','#9030c8'),roughness:0.28,metalness:0.0});
+  const m2t=new THREE.MeshStandardMaterial({map:frostTex('#d080ff','#b860e8'),roughness:0.18,metalness:0.05});
+  const m3s=new THREE.MeshStandardMaterial({map:frostTex('#c878f0','#aa50e0'),roughness:0.25,metalness:0.0});
+  const m3t=new THREE.MeshStandardMaterial({map:frostTex('#e8b0ff','#d090f8'),roughness:0.15,metalness:0.06});
+  const glazeMat=mat(0xcc44ff,0.06,0.15);
+  const creamMat=mat(0xf8f0ff,0.45);
+  const berryMat=mat(0xdd1155,0.4);
+  const leafMat=mat(0x2e7d32,0.6);
+  const plateMat=new THREE.MeshStandardMaterial({color:0xc8a0e8,roughness:0.12,metalness:0.35});
+  const colMat=new THREE.MeshStandardMaterial({color:0xaa80d0,roughness:0.18,metalness:0.28});
+  const candleMat=mat(0xeeccff,0.4);
+  const wickMat=mat(0x2a1000,0.9);
 
-  const root = new THREE.Group();
-  scene.add(root);
+  const root=new THREE.Group(); scene.add(root);
 
   function cyl(rT,rB,h,seg,mSide,mTop,mBot,y){
     const geo=new THREE.CylinderGeometry(rT,rB,h,seg,1,false);
@@ -523,26 +574,25 @@ function buildCakeScene(container, width, height, autoRotate){
   cyl(0.18,0.22,0.55,32,colMat,colMat,colMat,0.61);
   cyl(0.30,0.30,0.08,32,plateMat,plateMat,plateMat,0.93);
 
-  const T1Y=0.97, T1R=1.28, T1H=0.9;
-  cyl(T1R,T1R,T1H,80,m1s,m1t,m1s, T1Y+T1H/2);
-  const T2Y=T1Y+T1H, T2R=0.98, T2H=0.72;
-  cyl(T2R,T2R,T2H,72,m2s,m2t,m2s, T2Y+T2H/2);
-  const T3Y=T2Y+T2H, T3R=0.68, T3H=0.56;
-  cyl(T3R,T3R,T3H,64,m3s,m3t,m3s, T3Y+T3H/2);
+  const T1Y=0.97,T1R=1.28,T1H=0.9;
+  cyl(T1R,T1R,T1H,80,m1s,m1t,m1s,T1Y+T1H/2);
+  const T2Y=T1Y+T1H,T2R=0.98,T2H=0.72;
+  cyl(T2R,T2R,T2H,72,m2s,m2t,m2s,T2Y+T2H/2);
+  const T3Y=T2Y+T2H,T3R=0.68,T3H=0.56;
+  cyl(T3R,T3R,T3H,64,m3s,m3t,m3s,T3Y+T3H/2);
 
   function glaze(tY,tH,tR,count,dH=0.2){
     const dg=new THREE.CylinderGeometry(tR+0.015,tR+0.015,0.045,80);
     const dm=new THREE.Mesh(dg,glazeMat); dm.position.y=tY+tH+0.022; dm.castShadow=true; root.add(dm);
     for(let i=0;i<count;i++){
-      const a=(i/count)*Math.PI*2, rnd=0.5+Math.random()*0.5;
-      const dh=dH*rnd;
+      const a=(i/count)*Math.PI*2, rnd=0.5+Math.random()*0.5, dh=dH*rnd;
       const cg=new THREE.CylinderGeometry(0.042,0.026,dh,12);
       const cm=new THREE.Mesh(cg,glazeMat);
-      cm.position.set(Math.cos(a)*(tR+0.012), tY+tH-dh/2, Math.sin(a)*(tR+0.012));
+      cm.position.set(Math.cos(a)*(tR+0.012),tY+tH-dh/2,Math.sin(a)*(tR+0.012));
       cm.castShadow=true; root.add(cm);
       const bg=new THREE.SphereGeometry(0.048,10,8);
       const bm=new THREE.Mesh(bg,glazeMat);
-      bm.position.set(Math.cos(a)*(tR+0.012), tY+tH-dh-0.012, Math.sin(a)*(tR+0.012));
+      bm.position.set(Math.cos(a)*(tR+0.012),tY+tH-dh-0.012,Math.sin(a)*(tR+0.012));
       root.add(bm);
     }
   }
@@ -561,8 +611,8 @@ function buildCakeScene(container, width, height, autoRotate){
     g.position.set(x,y,z); root.add(g);
   }
   for(let i=0;i<11;i++) rosette(Math.cos((i/11)*Math.PI*2)*1.02,T1Y+T1H+0.07,Math.sin((i/11)*Math.PI*2)*1.02,0.92);
-  for(let i=0;i<8;i++)  rosette(Math.cos((i/8)*Math.PI*2)*0.77, T2Y+T2H+0.07,Math.sin((i/8)*Math.PI*2)*0.77, 0.82);
-  for(let i=0;i<6;i++)  rosette(Math.cos((i/6)*Math.PI*2)*0.52, T3Y+T3H+0.06,Math.sin((i/6)*Math.PI*2)*0.52, 0.74);
+  for(let i=0;i<8;i++) rosette(Math.cos((i/8)*Math.PI*2)*0.77,T2Y+T2H+0.07,Math.sin((i/8)*Math.PI*2)*0.77,0.82);
+  for(let i=0;i<6;i++) rosette(Math.cos((i/6)*Math.PI*2)*0.52,T3Y+T3H+0.06,Math.sin((i/6)*Math.PI*2)*0.52,0.74);
 
   function berry(x,y,z,ry=0){
     const g=new THREE.Group(); g.position.set(x,y,z); g.rotation.y=ry;
@@ -574,8 +624,7 @@ function buildCakeScene(container, width, height, autoRotate){
       l.position.set(Math.cos(a)*0.06,0.2,Math.sin(a)*0.06);
       l.rotation.z=Math.cos(a)*0.5; l.rotation.x=Math.sin(a)*0.5; g.add(l);
     }
-    const sh=new THREE.Mesh(new THREE.SphereGeometry(0.04,8,8),
-      new THREE.MeshStandardMaterial({color:0xffffff,roughness:0,transparent:true,opacity:0.55}));
+    const sh=new THREE.Mesh(new THREE.SphereGeometry(0.04,8,8),new THREE.MeshStandardMaterial({color:0xffffff,roughness:0,transparent:true,opacity:0.55}));
     sh.position.set(-0.04,0.12,0.09); g.add(sh);
     root.add(g);
   }
@@ -584,16 +633,11 @@ function buildCakeScene(container, width, height, autoRotate){
 
   function lollipop(x,z,baseY,stH,hR,ca,cb){
     const g=new THREE.Group();
-    const stick=new THREE.Mesh(new THREE.CylinderGeometry(0.026,0.026,stH,10),
-      new THREE.MeshStandardMaterial({color:0xd4a060,roughness:0.5}));
+    const stick=new THREE.Mesh(new THREE.CylinderGeometry(0.026,0.026,stH,10),new THREE.MeshStandardMaterial({color:0xd4a060,roughness:0.5}));
     stick.position.y=stH/2; stick.castShadow=true; g.add(stick);
     const cv=document.createElement('canvas'); cv.width=128; cv.height=128;
     const ctx=cv.getContext('2d');
-    [ca,cb,ca,cb,ca,cb].forEach((c,i)=>{
-      ctx.beginPath(); ctx.moveTo(64,64);
-      ctx.arc(64,64,62,(i/6)*Math.PI*2,((i+1)/6)*Math.PI*2);
-      ctx.closePath(); ctx.fillStyle=c; ctx.fill();
-    });
+    [ca,cb,ca,cb,ca,cb].forEach((c,i)=>{ ctx.beginPath(); ctx.moveTo(64,64); ctx.arc(64,64,62,(i/6)*Math.PI*2,((i+1)/6)*Math.PI*2); ctx.closePath(); ctx.fillStyle=c; ctx.fill(); });
     ctx.beginPath(); ctx.arc(42,38,22,0,Math.PI*1.1);
     ctx.strokeStyle='rgba(255,255,255,0.5)'; ctx.lineWidth=9; ctx.stroke();
     const hm=new THREE.MeshStandardMaterial({map:new THREE.CanvasTexture(cv),roughness:0.07,metalness:0.1,side:THREE.DoubleSide});
@@ -602,9 +646,9 @@ function buildCakeScene(container, width, height, autoRotate){
     g.position.set(x,baseY,z); root.add(g);
   }
   const LY=T3Y+T3H;
-  lollipop(-0.28, 0.1,  LY, 0.78, 0.24, '#cc44ff','#ffffff');
-  lollipop( 0.24,-0.1,  LY, 0.66, 0.19, '#ff88cc','#ffffaa');
-  lollipop(-0.06,-0.22, LY+0.06, 0.56, 0.15, '#88aaff','#ffffff');
+  lollipop(-0.28,0.1,LY,0.78,0.24,'#cc44ff','#ffffff');
+  lollipop(0.24,-0.1,LY,0.66,0.19,'#ff88cc','#ffffaa');
+  lollipop(-0.06,-0.22,LY+0.06,0.56,0.15,'#88aaff','#ffffff');
 
   const CY=T3Y+T3H+0.05;
   const candle=new THREE.Mesh(new THREE.CylinderGeometry(0.068,0.068,0.44,24),candleMat);
@@ -612,6 +656,7 @@ function buildCakeScene(container, width, height, autoRotate){
   const wm=new THREE.Mesh(new THREE.CylinderGeometry(0.008,0.008,0.06,8),wickMat);
   wm.position.set(0.08,CY+0.47,-0.08); root.add(wm);
 
+  // FLAME GROUP — exposed for blowing out
   const flameGrp=new THREE.Group();
   flameGrp.position.set(0.08,CY+0.56,-0.08);
   const fcv=document.createElement('canvas'); fcv.width=64; fcv.height=128;
@@ -623,18 +668,15 @@ function buildCakeScene(container, width, height, autoRotate){
   fg.addColorStop(1,'rgba(200,0,100,0)');
   fctx.fillStyle=fg; fctx.fillRect(0,0,64,128);
   const flameMat=new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(fcv),transparent:true,depthWrite:false,side:THREE.DoubleSide});
-  for(let i=0;i<3;i++){
-    const fp=new THREE.Mesh(new THREE.PlaneGeometry(0.2,0.34),flameMat);
-    fp.rotation.y=i*(Math.PI/3); flameGrp.add(fp);
-  }
+  for(let i=0;i<3;i++){ const fp=new THREE.Mesh(new THREE.PlaneGeometry(0.2,0.34),flameMat); fp.rotation.y=i*(Math.PI/3); flameGrp.add(fp); }
   root.add(flameGrp);
 
   const sp=new THREE.Mesh(new THREE.PlaneGeometry(8,8),new THREE.ShadowMaterial({opacity:0.15}));
   sp.rotation.x=-Math.PI/2; sp.receiveShadow=true; scene.add(sp);
 
-  // ── STATE ──
-  let rotY=0, targetRotY=0;
-  let t=0;
+  let rotY=0,targetRotY=0,t=0;
+  let flameVisible=true;
+  let flameOpacity=1;
 
   function tick(){
     requestAnimationFrame(tick);
@@ -643,10 +685,21 @@ function buildCakeScene(container, width, height, autoRotate){
     rotY+=(targetRotY-rotY)*0.07;
     root.rotation.y=rotY;
     root.rotation.x=0.08;
-    const flk=0.85+Math.sin(t*11)*0.08+Math.sin(t*17)*0.04;
-    candlePt.intensity=2.2*flk;
-    flameGrp.scale.set(flk, 0.88+Math.sin(t*13)*0.14, flk);
-    flameGrp.rotation.y=t*2.5;
+
+    if(flameVisible){
+      const flk=0.85+Math.sin(t*11)*0.08+Math.sin(t*17)*0.04;
+      candlePt.intensity=2.2*flk*flameOpacity;
+      flameGrp.scale.set(flk,0.88+Math.sin(t*13)*0.14,flk);
+      flameGrp.rotation.y=t*2.5;
+    } else {
+      // fade out flame
+      if(flameOpacity>0){
+        flameOpacity=Math.max(0,flameOpacity-0.04);
+        flameMat.opacity=flameOpacity;
+        candlePt.intensity=flameOpacity*2.2;
+        if(flameOpacity===0){ flameGrp.visible=false; }
+      }
+    }
     renderer.render(scene,camera);
   }
   tick();
@@ -655,25 +708,25 @@ function buildCakeScene(container, width, height, autoRotate){
     renderer, scene, root,
     getRotY(){ return rotY; },
     syncRotY(a){ targetRotY=a; rotY=a; },
-    // Direct setter — no smoothing, used to mirror carousel exactly
-    setAbsRotY(a){ targetRotY=a; rotY=a; root.rotation.y=a; }
+    setAbsRotY(a){ targetRotY=a; rotY=a; root.rotation.y=a; },
+    blowOutFlame(){ flameVisible=false; },
+    isFlameOut(){ return !flameVisible; }
   };
 }
 
 // ══════════════════════════════════════════════════════════
 // INIT HOME CAKE
 // ══════════════════════════════════════════════════════════
-const homeWrap = document.getElementById('home-canvas-wrap');
-const homeW = homeWrap.clientWidth||420, homeH = homeWrap.clientHeight||520;
-const homeCake = buildCakeScene(homeWrap, homeW, homeH, true);
+const homeWrap=document.getElementById('home-canvas-wrap');
+const homeW=homeWrap.clientWidth||420, homeH=homeWrap.clientHeight||520;
+const homeCake=buildCakeScene(homeWrap,homeW,homeH,true);
 
 // ══════════════════════════════════════════════════════════
-// TRANSITION
+// GALLERY → HOME TRANSITION
 // ══════════════════════════════════════════════════════════
-let galleryCake = null;
-
+let galleryCake=null;
 function startTransition(){
-  const wrap = document.getElementById('home-canvas-wrap');
+  const wrap=document.getElementById('home-canvas-wrap');
   wrap.style.transition='transform 1.1s cubic-bezier(.4,0,.2,1),opacity 1.1s ease';
   wrap.style.transformOrigin='center center';
   wrap.style.transform='scale(3.8) translateY(-15%)';
@@ -690,28 +743,25 @@ function startTransition(){
       gw.style.transform='translate(-50%,-50%) scale(1)';
       gw.style.opacity='1';
     }));
-
-    // Show gallery UI elements
     setTimeout(()=>{
       document.getElementById('bday-ribbon').style.opacity='1';
       document.getElementById('scroll-arrow').style.opacity='1';
       document.getElementById('countdown').style.opacity='1';
-    }, 400);
-
-    setTimeout(fadeInPhotos, 560);
-    setTimeout(fireConfetti, 700);
-
-    // Auto-hide scroll arrow after 5s
+    },400);
+    setTimeout(fadeInPhotos,560);
+    setTimeout(()=>fireConfetti(null,null,null),700);
+    setTimeout(()=>{ document.getElementById('scroll-arrow').style.opacity='0'; },5500);
+    // Show wish button after a small delay
     setTimeout(()=>{
-      document.getElementById('scroll-arrow').style.opacity='0';
-    }, 5500);
+      const wb=document.getElementById('wish-btn');
+      wb.style.opacity='1';
+    },1200);
   },1100);
 }
 
 function goBackHome(){
   document.body.classList.remove('show-gallery');
-  // Reset home cake canvas
-  const wrap = document.getElementById('home-canvas-wrap');
+  const wrap=document.getElementById('home-canvas-wrap');
   wrap.style.transition='none';
   wrap.style.transform='';
   wrap.style.opacity='1';
@@ -721,25 +771,19 @@ function goBackHome(){
 // GALLERY
 // ══════════════════════════════════════════════════════════
 let galleryBuilt=false;
-let carouselAngle=0, targetAngle=0;
+let carouselAngle=0,targetAngle=0;
 let glowIntensity=0;
 let cardStates=[];
-let mouseX=0, mouseY=0;
-const CARD_W=110, CARD_H=139;
-
-// ── CAKE ROTATION TRACKING ──
-// We track the raw carousel angle and map it proportionally to the cake.
-// The carousel rotates in degrees; the cake uses radians.
-// We mirror the carousel angle directly to keep them in sync.
-let lastSyncedAngle = 0;
+let mouseX=0,mouseY=0;
+const CARD_W=110,CARD_H=139;
+let lastSyncedAngle=0;
 
 function buildGallery(){
-  if(galleryBuilt)return; galleryBuilt=true;
-
+  if(galleryBuilt) return; galleryBuilt=true;
   const gw=document.getElementById('gallery-canvas-wrap');
-  galleryCake=buildCakeScene(gw, 280, 340, false);
+  galleryCake=buildCakeScene(gw,280,340,false);
   galleryCake.syncRotY(homeCake.getRotY());
-  lastSyncedAngle = 0;
+  lastSyncedAngle=0;
 
   const container=document.getElementById('carousel-3d');
   const isMob=window.innerWidth<600;
@@ -748,45 +792,21 @@ function buildGallery(){
   memories.forEach((mem,i)=>{
     const card=document.createElement('div');
     card.className='photo-card'; card.dataset.index=i;
-
-    // Build with fallback placeholder
-    const inner = document.createElement('div');
-    inner.className = 'photo-inner';
-
-    const img = document.createElement('img');
-    img.alt = mem.title;
-    img.draggable = false;
-    img.loading = 'lazy';
-
-    const placeholder = document.createElement('div');
-    placeholder.className = 'img-placeholder';
-    placeholder.innerHTML = `<div class="ph-heart">♡</div><span>${mem.title}</span>`;
-
-    img.onload = function(){ img.style.display='block'; placeholder.style.display='none'; };
-    img.onerror = function(){ img.style.display='none'; placeholder.style.display='flex'; };
-    img.src = mem.image;
-
-    const cap = document.createElement('div');
-    cap.className = 'cap';
-    cap.textContent = mem.title;
-
-    inner.appendChild(img);
-    inner.appendChild(placeholder);
-    inner.appendChild(cap);
+    const inner=document.createElement('div'); inner.className='photo-inner';
+    const img=document.createElement('img'); img.alt=mem.title; img.draggable=false; img.loading='lazy';
+    const placeholder=document.createElement('div'); placeholder.className='img-placeholder';
+    placeholder.innerHTML=`<div class="ph-heart">♡</div><span>${mem.title}</span>`;
+    img.onload=function(){ img.style.display='block'; placeholder.style.display='none'; };
+    img.onerror=function(){ img.style.display='none'; placeholder.style.display='flex'; };
+    img.src=mem.image;
+    const cap=document.createElement('div'); cap.className='cap'; cap.textContent=mem.title;
+    inner.appendChild(img); inner.appendChild(placeholder); inner.appendChild(cap);
     card.appendChild(inner);
-
     card.addEventListener('click',()=>openModal(i));
     card.style.opacity='0';
     container.appendChild(card);
-    cardStates.push({
-      floatPhase:Math.random()*Math.PI*2,
-      floatSpeed:0.012+Math.random()*0.008,
-      floatAmp:6+Math.random()*5,
-      floatOffset:0,
-      currentLift:0, currentScale:1, currentGlow:0,
-    });
+    cardStates.push({ floatPhase:Math.random()*Math.PI*2, floatSpeed:0.012+Math.random()*0.008, floatAmp:6+Math.random()*5, floatOffset:0, currentLift:0, currentScale:1, currentGlow:0 });
   });
-
   startGalleryLoop(RX,RY);
   setupInput();
 }
@@ -800,27 +820,12 @@ function fadeInPhotos(){
 function startGalleryLoop(RX,RY){
   const cards=[...document.querySelectorAll('.photo-card')];
   const n=cards.length;
-
-  // The carousel uses degrees. The cake uses radians.
-  // To keep them perfectly in sync, we convert carousel angle to radians
-  // and apply it directly to the cake — same speed, same direction.
-  // Carousel: positive angle = clockwise visually.
-  // Cake root.rotation.y: positive = counter-clockwise from above.
-  // We negate so they spin together naturally.
-  const DEG_TO_RAD = Math.PI / 180;
+  const DEG_TO_RAD=Math.PI/180;
 
   function loop(){
     const diff=targetAngle-carouselAngle;
     carouselAngle+=diff*0.1;
-
-    // ── CAKE SYNC: mirror carousel angle to cake rotation ──
-    // carouselAngle is in degrees; convert to radians and negate
-    // so the cake visually spins in the same direction as the photos
-    if(galleryCake){
-      const cakeRad = -(carouselAngle * DEG_TO_RAD);
-      galleryCake.setAbsRotY(cakeRad);
-    }
-
+    if(galleryCake){ galleryCake.setAbsRotY(-(carouselAngle*DEG_TO_RAD)); }
     const rawSpeed=Math.abs(diff);
     const tGlow=Math.min(1,rawSpeed/12);
     glowIntensity+=(tGlow-glowIntensity)*(tGlow>glowIntensity?0.18:0.04);
@@ -835,11 +840,9 @@ function startGalleryLoop(RX,RY){
       const sinV=Math.sin(rad);
       const zi=Math.round((sinV+1)*10)+5;
       const depthScale=0.78+(sinV+1)*0.13;
-
       const vpCX=window.innerWidth/2, vpCY=window.innerHeight/2;
       const sx=vpCX+cx-CARD_W/2, sy=vpCY+cy-CARD_H/2;
       const under=mouseX>=sx&&mouseX<=sx+CARD_W&&mouseY>=sy&&mouseY<=sy+CARD_H;
-
       const tLift=under?-20:0;
       const tScale=under?depthScale*1.15:depthScale;
       st.currentLift+=(tLift-st.currentLift)*0.1;
@@ -847,26 +850,18 @@ function startGalleryLoop(RX,RY){
       st.floatPhase+=st.floatSpeed;
       const floatY=under?0:Math.sin(st.floatPhase)*st.floatAmp;
       st.floatOffset+=(floatY-st.floatOffset)*0.06;
-
       const tGlowCard=glowIntensity+(under?0.55:0);
       st.currentGlow+=(Math.min(1,tGlowCard)-st.currentGlow)*0.1;
-
       const totalY=cy+st.currentLift+st.floatOffset;
       card.style.transform=`translate(calc(${cx}px - ${CARD_W/2}px),calc(${totalY}px - ${CARD_H/2}px)) rotate(${((i%3)-1)*8}deg) scale(${st.currentScale})`;
       card.style.zIndex=under?50:zi;
-
       const inner=card.querySelector('.photo-inner');
       const g=st.currentGlow;
-      if(g<0.005){
-        inner.style.boxShadow='0 8px 28px rgba(100,20,160,.2)';
-      } else {
+      if(g<0.005){ inner.style.boxShadow='0 8px 28px rgba(100,20,160,.2)'; }
+      else{
         const a1=(g*.9).toFixed(3),a2=(g*.55).toFixed(3),a3=(g*.3).toFixed(3);
         const s1=Math.round(g*18),s2=Math.round(g*36),s3=Math.round(g*60);
-        inner.style.boxShadow=
-          `0 8px 28px rgba(100,20,160,.2),`+
-          `0 0 ${s1}px ${Math.round(g*4)}px rgba(180,80,255,${a1}),`+
-          `0 0 ${s2}px ${Math.round(g*8)}px rgba(200,130,255,${a2}),`+
-          `0 0 ${s3}px ${Math.round(g*16)}px rgba(220,180,255,${a3})`;
+        inner.style.boxShadow=`0 8px 28px rgba(100,20,160,.2),0 0 ${s1}px ${Math.round(g*4)}px rgba(180,80,255,${a1}),0 0 ${s2}px ${Math.round(g*8)}px rgba(200,130,255,${a2}),0 0 ${s3}px ${Math.round(g*16)}px rgba(220,180,255,${a3})`;
       }
     });
     requestAnimationFrame(loop);
@@ -874,7 +869,6 @@ function startGalleryLoop(RX,RY){
   loop();
 }
 
-// ── INPUT ──
 let dragging=false,dStartX=0,dStartA=0,lastDelta=0;
 function setupInput(){
   const el=document.getElementById('gallery-inner');
@@ -883,59 +877,311 @@ function setupInput(){
   el.addEventListener('wheel',e=>{ e.preventDefault(); targetAngle+=e.deltaY*.3+e.deltaX*.3; },{passive:false});
   el.addEventListener('touchstart',e=>{ dragging=true; dStartX=e.touches[0].clientX; dStartA=targetAngle; lastDelta=0; },{passive:true});
   el.addEventListener('touchmove',e=>{ if(!dragging)return; const dx=e.touches[0].clientX-dStartX; lastDelta=(dStartA-dx*.7)-targetAngle; targetAngle=dStartA-dx*.7; },{passive:true});
-  el.addEventListener('touchend',()=>{ dragging=false; let v=lastDelta*10; (function f(){if(Math.abs(v)<.05)return;v*=.93;targetAngle+=v;requestAnimationFrame(f);})(); });
+  el.addEventListener('touchend',()=>{ dragging=false; let v=lastDelta*10; (function f(){ if(Math.abs(v)<.05)return; v*=.93; targetAngle+=v; requestAnimationFrame(f); })(); });
   el.addEventListener('mousedown',e=>{ dragging=true; dStartX=e.clientX; dStartA=targetAngle; lastDelta=0; });
   el.addEventListener('mousemove',e=>{ if(!dragging)return; const dx=e.clientX-dStartX; lastDelta=(dStartA-dx*.6)-targetAngle; targetAngle=dStartA-dx*.6; });
-  el.addEventListener('mouseup',()=>{ dragging=false; let v=lastDelta*10; (function f(){if(Math.abs(v)<.05)return;v*=.93;targetAngle+=v;requestAnimationFrame(f);})(); });
+  el.addEventListener('mouseup',()=>{ dragging=false; let v=lastDelta*10; (function f(){ if(Math.abs(v)<.05)return; v*=.93; targetAngle+=v; requestAnimationFrame(f); })(); });
   el.addEventListener('mouseleave',()=>dragging=false);
 }
 
-// ── MODAL ──
-let currentModalIndex = 0;
-
-function openModal(i){
-  currentModalIndex = i;
-  renderModal(i);
-  document.getElementById('modal').classList.add('open');
+// ══════════════════════════════════════════════════════════
+// MODAL
+// ══════════════════════════════════════════════════════════
+let currentModalIndex=0;
+function openModal(i){ currentModalIndex=i; renderModal(i); document.getElementById('modal').classList.add('open'); }
+function renderModal(i){
+  const m=memories[i];
+  const imgEl=document.getElementById('modal-img-el');
+  const placeholder=document.getElementById('modal-img-placeholder');
+  const phTitle=document.getElementById('modal-placeholder-title');
+  imgEl.style.display='block'; placeholder.style.display='none';
+  imgEl.onload=function(){ imgEl.style.display='block'; placeholder.style.display='none'; };
+  imgEl.onerror=function(){ imgEl.style.display='none'; placeholder.style.display='flex'; phTitle.textContent=m.title; };
+  imgEl.src=m.image;
+  document.getElementById('modal-title').textContent=m.title;
+  document.getElementById('modal-letter').textContent=m.letter;
 }
-
-function renderModal(i) {
-  const m = memories[i];
-  const imgEl = document.getElementById('modal-img-el');
-  const placeholder = document.getElementById('modal-img-placeholder');
-  const phTitle = document.getElementById('modal-placeholder-title');
-
-  imgEl.style.display = 'block';
-  placeholder.style.display = 'none';
-  imgEl.onload = function(){ imgEl.style.display='block'; placeholder.style.display='none'; };
-  imgEl.onerror = function(){
-    imgEl.style.display='none';
-    placeholder.style.display='flex';
-    phTitle.textContent = m.title;
-  };
-  imgEl.src = m.image;
-  document.getElementById('modal-title').textContent = m.title;
-  document.getElementById('modal-letter').textContent = m.letter;
-}
-
-function navigateModal(dir){
-  currentModalIndex = (currentModalIndex + dir + memories.length) % memories.length;
-  renderModal(currentModalIndex);
-}
-
+function navigateModal(dir){ currentModalIndex=(currentModalIndex+dir+memories.length)%memories.length; renderModal(currentModalIndex); }
 function closeModal(){ document.getElementById('modal').classList.remove('open'); }
-document.getElementById('modal').addEventListener('click',function(e){ if(e.target===this)closeModal(); });
+document.getElementById('modal').addEventListener('click',function(e){ if(e.target===this) closeModal(); });
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape') closeModal();
-  if(e.key==='ArrowRight' && document.getElementById('modal').classList.contains('open')) navigateModal(1);
-  if(e.key==='ArrowLeft'  && document.getElementById('modal').classList.contains('open')) navigateModal(-1);
+  if(e.key==='ArrowRight'&&document.getElementById('modal').classList.contains('open')) navigateModal(1);
+  if(e.key==='ArrowLeft'&&document.getElementById('modal').classList.contains('open')) navigateModal(-1);
 });
 
-// ── RESIZE ──
+// ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
+//   WISH PAGE
+// ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
+
+let wishCake = null;
+let wishPageBuilt = false;
+let blownOut = false;
+let micStream = null;
+let micAnalyser = null;
+let micAudioCtx = null;
+let blowListening = false;
+
+// ── Build scatter cards layer ──
+function buildScatterCards(){
+  const layer = document.getElementById('scatter-layer');
+  layer.innerHTML = '';
+  const vw = window.innerWidth, vh = window.innerHeight;
+  memories.forEach((mem, i) => {
+    const card = document.createElement('div');
+    card.className = 'scatter-card';
+    card.id = 'sc-' + i;
+
+    // Random start position around the center (carousel position simulation)
+    const angle = (i / memories.length) * Math.PI * 2;
+    const rx = Math.min(vw, 600) * 0.28;
+    const ry = Math.min(vh, 500) * 0.22;
+    const cx = vw/2 + Math.cos(angle) * rx;
+    const cy = vh/2 + Math.sin(angle) * ry;
+    const rot = ((i % 3) - 1) * 8;
+
+    card.style.left = cx + 'px';
+    card.style.top  = cy + 'px';
+    card.style.transform = `translate(-50%, -50%) rotate(${rot}deg) scale(0.9)`;
+    card.style.opacity = '0.85';
+    card.style.transition = 'none';
+    card.style.boxShadow = '0 8px 28px rgba(100,20,160,.2)';
+
+    // Image or placeholder
+    const img = document.createElement('img');
+    img.src = mem.image; img.draggable = false;
+    const ph = document.createElement('div');
+    ph.className = 'sc-ph'; ph.textContent = '♡';
+    img.onload  = ()=>{ img.style.display='block'; ph.style.display='none'; };
+    img.onerror = ()=>{ img.style.display='none'; ph.style.display='flex'; };
+
+    card.appendChild(img);
+    card.appendChild(ph);
+    layer.appendChild(card);
+  });
+}
+
+// ── Scatter-out animation: cards fly away from center ──
+function scatterCards(){
+  const vw = window.innerWidth, vh = window.innerHeight;
+  memories.forEach((_, i) => {
+    const card = document.getElementById('sc-' + i);
+    if(!card) return;
+    // Random target far off screen
+    const angle = Math.random() * Math.PI * 2;
+    const dist  = Math.max(vw, vh) * (0.85 + Math.random() * 0.5);
+    const tx    = Math.cos(angle) * dist;
+    const ty    = Math.sin(angle) * dist;
+    const rot   = (Math.random() - 0.5) * 720;
+    const delay = i * 40;
+
+    setTimeout(()=>{
+      card.style.transition = `transform 1.3s cubic-bezier(.22,1,.36,1), opacity 1.1s ease`;
+      card.style.transform  = `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) rotate(${rot}deg) scale(0.2)`;
+      card.style.opacity    = '0';
+    }, delay);
+  });
+}
+
+// ── WISH PAGE ENTRY ──
+function goToWishPage(){
+  if(wishPageBuilt) return;
+  wishPageBuilt = true;
+
+  // Build scatter cards matching current carousel positions
+  buildScatterCards();
+
+  // Show wish page
+  document.body.classList.add('show-wish');
+
+  // Get current cake rotation from gallery cake
+  const startRot = galleryCake ? galleryCake.getRotY() : 0;
+
+  // Scatter the photo cards
+  setTimeout(scatterCards, 120);
+
+  // Build the wish cake — start small and invisible, centered
+  const isMob = window.innerWidth < 600;
+  const cakeW = isMob ? 260 : 360;
+  const cakeH = isMob ? 300 : 440;
+
+  const wrap = document.getElementById('wish-cake-wrap');
+  wrap.style.width  = cakeW + 'px';
+  wrap.style.height = cakeH + 'px';
+  wrap.style.opacity = '0';
+  wrap.style.transform = 'translate(-50%, -50%) scale(0.18)';
+  wrap.style.transition = 'none';
+
+  wishCake = buildCakeScene(wrap, cakeW, cakeH, false);
+  wishCake.setAbsRotY(startRot);
+
+  // Animate cake zooming in — wait for scatter to start
+  setTimeout(()=>{
+    wrap.style.transition = 'transform 1.4s cubic-bezier(.22,1,.28,1), opacity 0.9s ease';
+    wrap.style.opacity = '1';
+    wrap.style.transform = 'translate(-50%, -50%) scale(1)';
+  }, 300);
+
+  // Show "Make a wish" text
+  setTimeout(()=>{
+    document.getElementById('wish-text').style.opacity = '1';
+  }, 1500);
+
+  // Request mic and start listening
+  setTimeout(()=>{
+    startMicListening();
+  }, 2000);
+}
+
+// ── MIC LISTENING ──
+function startMicListening(){
+  if(blownOut) return;
+
+  navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+    .then(stream => {
+      micStream = stream;
+      micAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const source = micAudioCtx.createMediaStreamSource(stream);
+      micAnalyser = micAudioCtx.createAnalyser();
+      micAnalyser.fftSize = 256;
+      micAnalyser.smoothingTimeConstant = 0.3;
+      source.connect(micAnalyser);
+
+      blowListening = true;
+      document.getElementById('blow-hint').style.opacity = '1';
+
+      detectBlow();
+    })
+    .catch(err => {
+      // Permission denied or not available — show tap button
+      if(err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError' || err.name === 'NotFoundError'){
+        const tapBtn = document.getElementById('tap-blow-btn');
+        tapBtn.style.display = 'flex';
+        // animate it in
+        tapBtn.style.opacity = '0';
+        tapBtn.style.transition = 'opacity .8s ease';
+        setTimeout(()=>{ tapBtn.style.opacity = '1'; }, 50);
+      }
+    });
+}
+
+// ── BLOW DETECTION ──
+// Detects a sudden sustained high volume spike (a blow/puff).
+// Strategy: track short-window RMS. A blow = RMS > threshold for >150ms.
+let blowSpikeStart = 0;
+const BLOW_THRESHOLD = 0.09;   // RMS energy threshold (0–1)
+const BLOW_DURATION  = 130;    // ms sustained above threshold
+
+function detectBlow(){
+  if(!blowListening || blownOut) return;
+
+  const bufLen = micAnalyser.frequencyBinCount;
+  const data   = new Uint8Array(bufLen);
+  micAnalyser.getByteTimeDomainData(data);
+
+  // Calculate RMS
+  let sum = 0;
+  for(let i = 0; i < bufLen; i++){
+    const v = (data[i] - 128) / 128;
+    sum += v * v;
+  }
+  const rms = Math.sqrt(sum / bufLen);
+
+  const now = performance.now();
+  if(rms > BLOW_THRESHOLD){
+    if(blowSpikeStart === 0) blowSpikeStart = now;
+    else if(now - blowSpikeStart >= BLOW_DURATION){
+      triggerBlow();
+      return;
+    }
+  } else {
+    blowSpikeStart = 0;
+  }
+
+  requestAnimationFrame(detectBlow);
+}
+
+function stopMic(){
+  blowListening = false;
+  if(micStream){ micStream.getTracks().forEach(t=>t.stop()); micStream = null; }
+  if(micAudioCtx){ micAudioCtx.close().catch(()=>{}); micAudioCtx = null; }
+}
+
+// ── BLOW OUT SEQUENCE ──
+let blowTriggered = false;
+function triggerBlow(){
+  if(blowTriggered) return;
+  blowTriggered = true;
+  blownOut = true;
+  stopMic();
+
+  // Hide listening hints
+  document.getElementById('blow-hint').style.opacity   = '0';
+  document.getElementById('tap-blow-btn').style.display = 'none';
+  document.getElementById('wish-text').style.opacity   = '0';
+
+  // Blow out the flame on the wish cake
+  if(wishCake) wishCake.blowOutFlame();
+
+  // Spawn smoke puffs at the candle position
+  spawnSmoke();
+
+  // After smoke: confetti burst
+  setTimeout(()=>{
+    fireConfetti(null, null, null);
+  }, 500);
+
+  // Show post-blow message
+  setTimeout(()=>{
+    document.getElementById('wish-message').style.opacity = '1';
+  }, 900);
+
+  // Show countdown after confetti settles
+  setTimeout(()=>{
+    document.getElementById('wish-countdown').style.opacity = '1';
+  }, 2200);
+}
+
+// ── SMOKE PUFFS ──
+function spawnSmoke(){
+  // Find approximate screen position of the candle flame
+  // The wish cake wrap is centered; the flame is near the top of the cake
+  const wrap = document.getElementById('wish-cake-wrap');
+  const rect  = wrap.getBoundingClientRect();
+  // Flame is at ~35% from top of canvas based on camera framing
+  const fx = rect.left + rect.width  * 0.52;
+  const fy = rect.top  + rect.height * 0.25;
+
+  const container = document.getElementById('smoke-container');
+  for(let i = 0; i < 8; i++){
+    setTimeout(()=>{
+      const puff = document.createElement('div');
+      puff.className = 'smoke-puff';
+      const size = 30 + Math.random() * 50;
+      const ox   = (Math.random() - 0.5) * 24;
+      puff.style.cssText = `
+        left: ${fx + ox}px;
+        top: ${fy}px;
+        width: ${size}px;
+        height: ${size}px;
+        animation-duration: ${0.9 + Math.random() * 0.6}s;
+        animation-delay: ${Math.random() * 0.12}s;
+      `;
+      container.appendChild(puff);
+      setTimeout(()=>puff.remove(), 2000);
+    }, i * 70);
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// RESIZE
+// ══════════════════════════════════════════════════════════
 window.addEventListener('resize',()=>{
   homeCake.renderer.setSize(homeWrap.clientWidth, homeWrap.clientHeight);
-  const cc = document.getElementById('confetti-canvas');
-  cc.width = window.innerWidth; cc.height = window.innerHeight;
+  const cc=document.getElementById('confetti-canvas');
+  cc.width=window.innerWidth; cc.height=window.innerHeight;
 });
 </script>
 </body>
