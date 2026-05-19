@@ -1071,8 +1071,8 @@ function startMicListening(){
 // Detects a sudden sustained high volume spike (a blow/puff).
 // Strategy: track short-window RMS. A blow = RMS > threshold for >150ms.
 let blowSpikeStart = 0;
-const BLOW_THRESHOLD = 0.09;   // RMS energy threshold (0–1)
-const BLOW_DURATION  = 130;    // ms sustained above threshold
+const BLOW_THRESHOLD = 0.05;   // RMS energy threshold (0–1)
+const BLOW_DURATION  = 100;    // ms sustained above threshold
 
 function detectBlow(){
   if(!blowListening || blownOut) return;
