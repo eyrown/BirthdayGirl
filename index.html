@@ -56,7 +56,7 @@ body.show-wish #wishpage{opacity:1;pointer-events:all}
 .photo-card .photo-inner .img-placeholder span{font-size:7px;color:rgba(255,255,255,.85);font-family:'Nunito',sans-serif;text-align:center;padding:0 4px;line-height:1.3}
 .photo-card .photo-inner .img-placeholder .ph-heart{font-size:18px;color:rgba(255,255,255,.9)}
 
-#hint{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:rgba(80,20,100,.7);z-index:30;font-family:'Nunito',sans-serif;pointer-events:none;background:rgba(255,255,255,.25);backdrop-filter:blur(8px);padding:7px 20px;border-radius:30px;border:1px solid rgba(255,255,255,.4);transition:opacity 1s ease}
+#hint{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:rgba(80,20,100,.65);z-index:30;font-family:'Nunito',sans-serif;pointer-events:none;background:rgba(255,255,255,.22);backdrop-filter:blur(8px);padding:5px 14px;border-radius:30px;border:1px solid rgba(255,255,255,.35);transition:opacity 1s ease;white-space:nowrap}
 
 #scroll-arrow{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);z-index:30;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:4px;opacity:0;transition:opacity .8s ease}
 #scroll-arrow .arrow-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(80,20,100,.7);font-family:'Nunito',sans-serif}
@@ -73,7 +73,8 @@ body.show-wish #wishpage{opacity:1;pointer-events:all}
 body.show-gallery #wish-btn{display:flex}
 
 /* HAPPY BIRTHDAY RIBBON */
-#bday-ribbon{position:absolute;top:0;left:0;width:100%;z-index:25;pointer-events:none;overflow:hidden;height:36px;opacity:0;transition:opacity .8s ease}
+#bday-ribbon{position:absolute;top:0;left:0;width:100%;z-index:25;pointer-events:none;overflow:hidden;height:36px;transform:translateY(-100%);opacity:0;transition:transform .7s cubic-bezier(.34,1.3,.64,1),opacity .5s ease}
+#bday-ribbon.ribbon-visible{transform:translateY(0);opacity:1}
 #bday-ribbon .ribbon-track{display:flex;white-space:nowrap;animation:ribbonScroll 18s linear infinite;will-change:transform}
 #bday-ribbon .ribbon-track span{font-family:'Fredoka One',cursive;font-size:13px;color:rgba(255,255,255,.82);padding:0 18px;letter-spacing:.12em;line-height:36px}
 #bday-ribbon .ribbon-track .dot{color:rgba(255,200,240,.7);font-size:10px}
@@ -191,6 +192,13 @@ body.show-wish #back-btn{display:none!important}
 #wish-bg .wave-back{height:55%;z-index:1}
 #wish-bg .wave-front{height:42%;z-index:2}
 
+/* FROM ERON SIGNATURE */
+#eron-sig{position:absolute;bottom:22px;right:22px;z-index:30;pointer-events:none;opacity:0;transition:opacity 1s ease;text-align:right}
+#eron-sig .sig-line{display:flex;align-items:center;justify-content:flex-end;gap:6px}
+#eron-sig .sig-seal{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,rgba(180,80,255,.5),rgba(100,180,255,.4));border:1px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-size:10px;backdrop-filter:blur(6px)}
+#eron-sig .sig-text{font-family:'Nunito',sans-serif;font-size:9px;letter-spacing:.22em;color:rgba(80,20,100,.55);text-transform:uppercase}
+#eron-sig .sig-name{font-family:'Fredoka One',cursive;font-size:11px;color:rgba(80,20,100,.45);letter-spacing:.08em;margin-top:1px}
+
 @media(max-width:680px){
   #home-layout{flex-direction:column;justify-content:flex-end;padding-bottom:70px;gap:0}
   #cake-side{height:auto}
@@ -203,6 +211,8 @@ body.show-wish #back-btn{display:none!important}
   #modal-prev{left:6px}
   #modal-next{right:6px}
   #countdown{bottom:60px;right:10px}
+  #hint{font-size:8px;letter-spacing:.1em;padding:4px 11px}
+  #eron-sig{bottom:62px;right:10px}
   #wish-btn{bottom:70px;left:12px;font-size:10px;padding:9px 18px}
   #wish-text .wt-main{font-size:clamp(20px,7vw,38px)}
 }
@@ -272,6 +282,14 @@ body.show-wish #back-btn{display:none!important}
       <div class="cd-sep">:</div>
       <div class="cd-unit"><div class="cd-num" id="cd-s">--</div><div class="cd-sub">sec</div></div>
     </div>
+  </div>
+  <!-- FROM ERON SIGNATURE -->
+  <div id="eron-sig">
+    <div class="sig-line">
+      <div class="sig-seal">♡</div>
+      <div class="sig-text">with love</div>
+    </div>
+    <div class="sig-name">— Eron</div>
   </div>
   <!-- WISH PAGE BUTTON -->
   <button id="wish-btn" onclick="goToWishPage()">🎂 Make a Wish</button>
@@ -683,6 +701,7 @@ function buildCakeScene(container, width, height, autoRotate){
   let rotY=0,targetRotY=0,t=0;
   let flameVisible=true;
   let flameOpacity=1;
+  let extScrollSpeed=0; // driven externally by gallery carousel speed
 
   function tick(){
     requestAnimationFrame(tick);
@@ -693,12 +712,17 @@ function buildCakeScene(container, width, height, autoRotate){
     root.rotation.x=0.08;
 
     if(flameVisible){
-      const flk=0.85+Math.sin(t*11)*0.08+Math.sin(t*17)*0.04;
-      candlePt.intensity=2.2*flk*flameOpacity;
-      flameGrp.scale.set(flk,0.88+Math.sin(t*13)*0.14,flk);
-      flameGrp.rotation.y=t*2.5;
+      // base flicker + extra turbulence proportional to scroll speed
+      const spd = Math.min(extScrollSpeed, 18);
+      const turbulence = spd / 18; // 0..1
+      const baseFlk = 0.85 + Math.sin(t*11)*0.08 + Math.sin(t*17)*0.04;
+      const extraFlk = turbulence * (Math.sin(t*31)*0.22 + Math.sin(t*47)*0.14);
+      const flk = Math.max(0.3, baseFlk + extraFlk);
+      candlePt.intensity = (2.2 + turbulence * 2.8) * flk * flameOpacity;
+      underGlow.intensity = 0.8 + turbulence * 1.2;
+      flameGrp.scale.set(flk, (0.88 + Math.sin(t*13)*0.14) * (1 + turbulence*0.3), flk);
+      flameGrp.rotation.y = t * (2.5 + turbulence * 4);
     } else {
-      // fade out flame
       if(flameOpacity>0){
         flameOpacity=Math.max(0,flameOpacity-0.04);
         flameMat.opacity=flameOpacity;
@@ -715,6 +739,7 @@ function buildCakeScene(container, width, height, autoRotate){
     getRotY(){ return rotY; },
     syncRotY(a){ targetRotY=a; rotY=a; },
     setAbsRotY(a){ targetRotY=a; rotY=a; root.rotation.y=a; },
+    setScrollSpeed(s){ extScrollSpeed=s; },
     blowOutFlame(){ flameVisible=false; },
     isFlameOut(){ return !flameVisible; }
   };
@@ -750,17 +775,17 @@ function startTransition(){
       gw.style.opacity='1';
     }));
     setTimeout(()=>{
-      document.getElementById('bday-ribbon').style.opacity='1';
+      document.getElementById('bday-ribbon').classList.add('ribbon-visible');
       document.getElementById('scroll-arrow').style.opacity='1';
       document.getElementById('countdown').style.opacity='1';
     },400);
     setTimeout(fadeInPhotos,560);
     setTimeout(()=>fireConfetti(null,null,null),700);
     setTimeout(()=>{ document.getElementById('scroll-arrow').style.opacity='0'; },5500);
-    // Show wish button after a small delay
+    // Show wish button and eron sig after a small delay
     setTimeout(()=>{
-      const wb=document.getElementById('wish-btn');
-      wb.style.opacity='1';
+      document.getElementById('wish-btn').style.opacity='1';
+      document.getElementById('eron-sig').style.opacity='1';
     },1200);
   },1100);
 }
@@ -831,8 +856,8 @@ function startGalleryLoop(RX,RY){
   function loop(){
     const diff=targetAngle-carouselAngle;
     carouselAngle+=diff*0.1;
-    if(galleryCake){ galleryCake.setAbsRotY(-(carouselAngle*DEG_TO_RAD)); }
     const rawSpeed=Math.abs(diff);
+    if(galleryCake){ galleryCake.setAbsRotY(-(carouselAngle*DEG_TO_RAD)); galleryCake.setScrollSpeed(rawSpeed); }
     const tGlow=Math.min(1,rawSpeed/12);
     glowIntensity+=(tGlow-glowIntensity)*(tGlow>glowIntensity?0.18:0.04);
     if(glowIntensity<0.002) glowIntensity=0;
@@ -859,15 +884,19 @@ function startGalleryLoop(RX,RY){
       const tGlowCard=glowIntensity+(under?0.55:0);
       st.currentGlow+=(Math.min(1,tGlowCard)-st.currentGlow)*0.1;
       const totalY=cy+st.currentLift+st.floatOffset;
-      card.style.transform=`translate(calc(${cx}px - ${CARD_W/2}px),calc(${totalY}px - ${CARD_H/2}px)) rotate(${((i%3)-1)*8}deg) scale(${st.currentScale})`;
+      // Gyroscope parallax: cards at different radii shift by different amounts for depth
+      const gyroParallaxX = gyroActive ? gyroX * (sinV + 1) * 14 : 0;
+      const gyroParallaxY = gyroActive ? gyroY * (sinV + 1) * 8 : 0;
+      const gyroTiltDeg   = gyroActive ? gyroX * 6 : 0;
+      card.style.transform=`translate(calc(${cx + gyroParallaxX}px - ${CARD_W/2}px),calc(${totalY + gyroParallaxY}px - ${CARD_H/2}px)) rotate(${((i%3)-1)*8 + gyroTiltDeg}deg) scale(${st.currentScale})`;
       card.style.zIndex=under?50:zi;
       const inner=card.querySelector('.photo-inner');
       const g=st.currentGlow;
-      if(g<0.005){ inner.style.boxShadow='0 8px 28px rgba(100,20,160,.2)'; }
+      if(g<0.005){ inner.style.boxShadow='0 8px 28px rgba(40,100,180,.15)'; }
       else{
-        const a1=(g*.9).toFixed(3),a2=(g*.55).toFixed(3),a3=(g*.3).toFixed(3);
-        const s1=Math.round(g*18),s2=Math.round(g*36),s3=Math.round(g*60);
-        inner.style.boxShadow=`0 8px 28px rgba(100,20,160,.2),0 0 ${s1}px ${Math.round(g*4)}px rgba(180,80,255,${a1}),0 0 ${s2}px ${Math.round(g*8)}px rgba(200,130,255,${a2}),0 0 ${s3}px ${Math.round(g*16)}px rgba(220,180,255,${a3})`;
+        const a1=(g*.95).toFixed(3),a2=(g*.6).toFixed(3),a3=(g*.32).toFixed(3);
+        const s1=Math.round(g*20),s2=Math.round(g*40),s3=Math.round(g*70);
+        inner.style.boxShadow=`0 8px 28px rgba(40,100,180,.18),0 0 ${s1}px ${Math.round(g*5)}px rgba(80,180,255,${a1}),0 0 ${s2}px ${Math.round(g*10)}px rgba(120,210,255,${a2}),0 0 ${s3}px ${Math.round(g*18)}px rgba(160,230,255,${a3})`;
       }
     });
     requestAnimationFrame(loop);
@@ -1078,8 +1107,8 @@ function startMicListening(){
 // Detects a sudden sustained high volume spike (a blow/puff).
 // Strategy: track short-window RMS. A blow = RMS > threshold for >150ms.
 let blowSpikeStart = 0;
-const BLOW_THRESHOLD = 0.04;   // RMS energy threshold (0–1)
-const BLOW_DURATION  = 90;    // ms sustained above threshold
+const BLOW_THRESHOLD = 0.09;   // RMS energy threshold (0–1)
+const BLOW_DURATION  = 130;    // ms sustained above threshold
 
 function detectBlow(){
   if(!blowListening || blownOut) return;
@@ -1133,6 +1162,9 @@ function triggerBlow(){
   // Blow out the flame on the wish cake
   if(wishCake) wishCake.blowOutFlame();
 
+  // Whoosh sound
+  playWhoosh();
+
   // Spawn smoke puffs at the candle position
   spawnSmoke();
 
@@ -1182,6 +1214,97 @@ function spawnSmoke(){
     }, i * 70);
   }
 }
+
+// ══════════════════════════════════════════════════════════
+// WHOOSH SOUND ON BLOW (Web Audio API — no external file)
+// ══════════════════════════════════════════════════════════
+function playWhoosh(){
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+    // White noise buffer
+    const bufferSize = ctx.sampleRate * 0.9;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for(let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1);
+
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+
+    // Bandpass filter — shapes noise into a soft "whoosh"
+    const bp = ctx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.setValueAtTime(800, ctx.currentTime);
+    bp.frequency.linearRampToValueAtTime(200, ctx.currentTime + 0.5);
+    bp.Q.value = 0.8;
+
+    // Gain envelope: quick attack, smooth decay
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.55, ctx.currentTime + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.85);
+
+    src.connect(bp);
+    bp.connect(gain);
+    gain.connect(ctx.destination);
+    src.start(ctx.currentTime);
+    src.stop(ctx.currentTime + 0.9);
+
+    // Also a short low-frequency thump for the "extinguish" feel
+    const osc = ctx.createOscillator();
+    const oscGain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(120, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.25);
+    oscGain.gain.setValueAtTime(0.3, ctx.currentTime);
+    oscGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+    osc.connect(oscGain);
+    oscGain.connect(ctx.destination);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.3);
+
+    setTimeout(()=>ctx.close(), 1200);
+  } catch(e){ /* audio not supported — silent fallback */ }
+}
+
+// ══════════════════════════════════════════════════════════
+// GYROSCOPE CARD TILT (mobile)
+// ══════════════════════════════════════════════════════════
+let gyroX = 0, gyroY = 0; // smoothed tilt values (-1..1)
+let gyroActive = false;
+
+function initGyroscope(){
+  if(!window.DeviceOrientationEvent) return;
+
+  const requestPerm = DeviceOrientationEvent.requestPermission;
+  if(typeof requestPerm === 'function'){
+    // iOS 13+ requires explicit permission
+    // We request on first user interaction inside the gallery
+    const askOnce = ()=>{
+      requestPerm().then(state=>{
+        if(state === 'granted') startGyro();
+      }).catch(()=>{});
+      document.removeEventListener('touchstart', askOnce);
+    };
+    document.addEventListener('touchstart', askOnce, {once:true});
+  } else {
+    startGyro();
+  }
+}
+
+function startGyro(){
+  window.addEventListener('deviceorientation', e=>{
+    if(!document.body.classList.contains('show-gallery')) return;
+    // gamma = left/right tilt (-90..90), beta = front/back tilt (-180..180)
+    const rawX = Math.max(-30, Math.min(30, e.gamma || 0)) / 30; // -1..1
+    const rawY = Math.max(-20, Math.min(20, (e.beta  || 0) - 30)) / 20; // -1..1 (offset by 30° for natural hold angle)
+    gyroX += (rawX - gyroX) * 0.08;
+    gyroY += (rawY - gyroY) * 0.08;
+    gyroActive = true;
+  }, {passive:true});
+}
+
+initGyroscope();
 
 // ══════════════════════════════════════════════════════════
 // RESIZE
