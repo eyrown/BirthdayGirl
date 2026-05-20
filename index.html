@@ -67,7 +67,7 @@ body.show-wish #wishpage{opacity:1;pointer-events:all}
 @keyframes chevPulse{0%,100%{opacity:.3;transform:rotate(45deg) translateY(-3px)}50%{opacity:1;transform:rotate(45deg) translateY(3px)}}
 
 /* GALLERY WISH BUTTON */
-#wish-btn{position:absolute;bottom:22px;right:22px;z-index:40;display:none;align-items:center;gap:7px;padding:11px 28px;border-radius:50px;border:1.5px solid rgba(255,255,255,.6);background:rgba(255,255,255,.28);backdrop-filter:blur(14px);color:#5a1a80;font-size:12px;font-family:'Nunito',sans-serif;font-weight:700;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:transform .2s,box-shadow .2s,opacity .6s ease;box-shadow:0 6px 24px rgba(140,60,200,.25);opacity:0;animation:wishPulse 2.2s ease-in-out infinite}
+#wish-btn{position:absolute;bottom:22px;left:22px;z-index:40;display:none;align-items:center;gap:7px;padding:11px 28px;border-radius:50px;border:1.5px solid rgba(255,255,255,.6);background:rgba(255,255,255,.28);backdrop-filter:blur(14px);color:#5a1a80;font-size:12px;font-family:'Nunito',sans-serif;font-weight:700;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:transform .2s,box-shadow .2s,opacity .6s ease;box-shadow:0 6px 24px rgba(140,60,200,.25);opacity:0;animation:wishPulse 2.2s ease-in-out infinite}
 #wish-btn:hover{transform:scale(1.07) translateY(-2px);box-shadow:0 14px 36px rgba(140,60,200,.4)}
 @keyframes wishPulse{0%,100%{box-shadow:0 6px 24px rgba(140,60,200,.25),0 0 0 0 rgba(180,80,255,0)}50%{box-shadow:0 6px 24px rgba(140,60,200,.25),0 0 0 8px rgba(180,80,255,0)}}
 body.show-gallery #wish-btn{display:flex}
@@ -146,14 +146,17 @@ body.show-wish #back-btn{display:none!important}
 .scatter-card .sc-ph{width:70px;height:60px;border-radius:3px;background:linear-gradient(135deg,#c060f0,#9030c8);display:flex;align-items:center;justify-content:center;font-size:16px;color:rgba(255,255,255,.8)}
 
 /* wish cake canvas */
-#wish-cake-wrap{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:10;pointer-events:none;opacity:0;transition:opacity .5s ease}
+#wish-cake-wrap{position:absolute;left:50%;top:54%;transform:translate(-50%,-50%);z-index:10;pointer-events:none;opacity:0;transition:opacity .5s ease}
 #wish-cake-wrap canvas{display:block}
 
-/* wish text */
-#wish-text{position:absolute;left:50%;top:18%;transform:translateX(-50%);z-index:15;text-align:center;pointer-events:none;opacity:0;transition:opacity 1s ease}
-#wish-text .wt-label{font-family:'Nunito',sans-serif;font-size:clamp(9px,1.1vw,12px);letter-spacing:.35em;color:rgba(80,20,100,.6);text-transform:uppercase;margin-bottom:10px}
-#wish-text .wt-main{font-family:'Fredoka One',cursive;font-size:clamp(22px,4.5vw,52px);line-height:1.15;background:linear-gradient(90deg,#e0b4ff,#ffd6f0,#b4d4ff,#e0b4ff);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 3s linear infinite;display:block}
-#wish-text .wt-sub{font-family:'Nunito',sans-serif;font-size:clamp(11px,1.2vw,14px);color:rgba(80,20,100,.65);margin-top:8px;letter-spacing:.06em}
+/* wish text — "Close your eyes" label + main wish text, sits ABOVE the cake */
+#wish-text{position:absolute;left:50%;top:5%;transform:translateX(-50%);z-index:15;text-align:center;pointer-events:none;opacity:0;transition:opacity 1s ease;width:90%;max-width:560px}
+#wish-text .wt-label{font-family:'Nunito',sans-serif;font-size:clamp(9px,1.1vw,12px);letter-spacing:.35em;color:rgba(80,20,100,.6);text-transform:uppercase;margin-bottom:8px}
+#wish-text .wt-main{font-family:'Fredoka One',cursive;font-size:clamp(20px,3.8vw,46px);line-height:1.2;background:linear-gradient(90deg,#e0b4ff,#ffd6f0,#b4d4ff,#e0b4ff);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 3s linear infinite;display:block}
+
+/* "take a deep breath and blow" — sits BELOW cake, ABOVE blow hint */
+#wish-sub-text{position:absolute;left:50%;bottom:26%;transform:translateX(-50%);z-index:15;text-align:center;pointer-events:none;opacity:0;transition:opacity 1s ease;white-space:nowrap}
+#wish-sub-text .wt-sub{font-family:'Nunito',sans-serif;font-size:clamp(11px,1.2vw,14px);color:rgba(80,20,100,.65);letter-spacing:.06em}
 
 /* mic / tap button */
 #blow-hint{position:absolute;bottom:18%;left:50%;transform:translateX(-50%);z-index:20;text-align:center;opacity:0;transition:opacity .8s ease;pointer-events:none}
@@ -200,7 +203,7 @@ body.show-wish #back-btn{display:none!important}
   #modal-prev{left:6px}
   #modal-next{right:6px}
   #countdown{bottom:60px;right:10px}
-  #wish-btn{bottom:70px;right:12px;font-size:10px;padding:9px 18px}
+  #wish-btn{bottom:70px;left:12px;font-size:10px;padding:9px 18px}
   #wish-text .wt-main{font-size:clamp(20px,7vw,38px)}
 }
 </style>
@@ -284,12 +287,15 @@ body.show-wish #back-btn{display:none!important}
   <div id="scatter-layer"></div>
   <!-- Smoke container -->
   <div id="smoke-container"></div>
-  <!-- Cake canvas -->
-  <div id="wish-cake-wrap"></div>
-  <!-- "Make a wish" text -->
+  <!-- "Make a wish" text — above the cake -->
   <div id="wish-text">
     <div class="wt-label">Close your eyes</div>
     <span class="wt-main">Make a wish and<br>blow your candle,<br>Mahal 💜</span>
+  </div>
+  <!-- Cake canvas -->
+  <div id="wish-cake-wrap"></div>
+  <!-- "take a deep breath and blow" — below cake, above blow hint -->
+  <div id="wish-sub-text">
     <div class="wt-sub">— take a deep breath and blow —</div>
   </div>
   <!-- Mic listening hint -->
@@ -1027,6 +1033,7 @@ function goToWishPage(){
   // Show "Make a wish" text
   setTimeout(()=>{
     document.getElementById('wish-text').style.opacity = '1';
+    document.getElementById('wish-sub-text').style.opacity = '1';
   }, 1500);
 
   // Request mic and start listening
@@ -1071,8 +1078,8 @@ function startMicListening(){
 // Detects a sudden sustained high volume spike (a blow/puff).
 // Strategy: track short-window RMS. A blow = RMS > threshold for >150ms.
 let blowSpikeStart = 0;
-const BLOW_THRESHOLD = 0.05;   // RMS energy threshold (0–1)
-const BLOW_DURATION  = 100;    // ms sustained above threshold
+const BLOW_THRESHOLD = 0.04;   // RMS energy threshold (0–1)
+const BLOW_DURATION  = 90;    // ms sustained above threshold
 
 function detectBlow(){
   if(!blowListening || blownOut) return;
@@ -1121,6 +1128,7 @@ function triggerBlow(){
   document.getElementById('blow-hint').style.opacity   = '0';
   document.getElementById('tap-blow-btn').style.display = 'none';
   document.getElementById('wish-text').style.opacity   = '0';
+  document.getElementById('wish-sub-text').style.opacity = '0';
 
   // Blow out the flame on the wish cake
   if(wishCake) wishCake.blowOutFlame();
